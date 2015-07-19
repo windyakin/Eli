@@ -1,0 +1,34 @@
+#=============================================
+# My Original Set
+#=============================================
+data/
+dist/
+dev/assets/css/
+dev/assets/js/
+dev/assets/img/
+
+#=============================================
+# node.js & Grunt
+#=============================================
+node_modules/
+.grunt
+.tmp/
+
+#=============================================
+# Sass/Compass
+#=============================================
+.sass-cache
+*.css.map
+
+#=============================================
+# Sublime Text
+#=============================================
+*.sublime-workspace
+*.sublime-project
+
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+sftp-config.json
+
