@@ -27,7 +27,10 @@ module.exports = function(grunt) {
 				unixNewlines: true,
 				style: 'expanded',
 				bundleExec: true,
-				loadPath: []
+				loadPath: [
+					'bower_components/bootstrap-sass/assets/stylesheets/',
+					'bower_components/Honoka/scss/'
+				]
 			},
 			assets: {
 				files: [{

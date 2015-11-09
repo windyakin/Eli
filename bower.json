@@ -17,12 +17,15 @@
   ],
   "devDependencies": {
     "jquery": "~2.1.4",
-    "Honoka": "3.3.5-c",
+    "Honoka": "importable",
     "bootstrap-sass": "3.3.5"
   },
   "exportsOverride": {
     "jquery": {
       ".": "dist/jquery**.js"
-    }
+    },
+    "Honoka": {},
+    "bootstrap-sass": {},
+    "bootstrap": {}
   }
 }
