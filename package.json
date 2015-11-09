@@ -7,7 +7,8 @@
   "license": "MIT",
   "main": "Gruntfile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test",
+    "start": "grunt dist"
   },
   "repository": {
     "type": "git",
