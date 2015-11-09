@@ -1,179 +1,285 @@
 'use strict';
 
 module.exports = function(grunt) {
+
 	var pkg, taskName;
+
 	pkg = grunt.file.readJSON('package.json');
 
 	grunt.initConfig({
-		// 文字列の置き換え
-		replace: {
-			// bannerの調整
-			banner: {
-				src: ['dist/assets/css/**/*.css'],
-				overwrite: true,
-				replacements: [
+		// 出力フォルダ(デフォルトは dev/ 以下)
+		dir: 'dev',
+		// Bowerでインストールしたライブラリの配置
+		bower: {
+			lib: {
+				options: {
+					targetDir: '<%= dir %>/lib/',
+					layout: function(dir, component, source) {
+						return component + '/' + dir;
+					}
+				}
+			}
+		},
+		// SCSSのビルド
+		sass: {
+			options: {
+				sourcemap: 'none',
+				unixNewlines: true,
+				style: 'expanded',
+				bundleExec: true,
+				loadPath: [
+					'bower_components/bootstrap-sass/assets/stylesheets/',
+					'bower_components/Honoka/scss/'
+				]
+			},
+			assets: {
+				files: [{
+					expand: true,
+					cwd: 'src/scss/',
+					src: '**/*.scss',
+					dest: '<%= dir %>/assets/css/',
+					ext: '.css'
+				}]
+			}
+		},
+		// SCSSのLinter
+		scsslint: {
+			options: {
+				bundleExec: true,
+				config: 'src/scss/.scss-lint.yml',
+				reporterOutput: null,
+				colorizeOutput: true
+			},
+			assets: ['src/scss/*.scss']
+		},
+		// ベンダープレフィックス
+		postcss: {
+			autoprefixer: {
+				options: {
+					map: false,
+					processors: [
+						require('autoprefixer')({
+							browsers: [
+								'Android 2.3',
+								'Android >= 4',
+								'Chrome >= 20',
+								'Firefox >= 24',
+								'Explorer >= 8',
+								'iOS >= 6',
+								'Opera >= 12',
+								'Safari >= 6'
+							]
+						})
+					]
+				},
+				expand: true,
+				cwd: '<%= dir %>/assets/css/',
+				src: ['**/*.css'],
+				dest: '<%= dir %>/assets/css/',
+				ext: '.css'
+			}
+		},
+		// CSSのプロパティソート
+		csscomb: {
+			options: {
+				config: 'src/scss/.csscomb.json'
+			},
+			assets: {
+				expand: true,
+				cwd: '<%= dir %>/assets/css/',
+				src: ['**/*.css'],
+				dest: '<%= dir %>/assets/css/',
+				ext: '.css'
+			}
+		},
+		// CSSのminify
+		cssmin: {
+			options: {
+				compatibility: 'ie9',
+				keepSpecialComments: '*',
+				noAdvanced: true
+			},
+			assets: {
+				files: [
 					{
-						from: '@charset "UTF-8";/*!',
-						to: '@charset "UTF-8";\n/*!'
-					},
-					{
-						from: 'The MIT License\n */',
-						to: 'The MIT License\n */\n'
+						expand: true,
+						cwd: '<%= dir %>/assets/css/',
+						src: ['**/*.css', '!**/*.min.css'],
+						dest: '<%= dir %>/assets/css/',
+						ext: '.css'
 					}
 				]
 			}
 		},
-		clean: {
-			dev: {
-				src: ['dev/assets/css', 'dev/assets/js', 'dev/assets/img']
-			},
-			dist: {
-				src: ['dist/']
-			}
+		// JavaScript構文チェック (eslint)
+		eslint: {
+			assets: ['src/js/*.js']
 		},
-		// cssのminify
-		cssmin: {
-			dist: {
-				expand: true,
-				cwd: 'dev/assets/css/',
-				src: ['**/*.css'],
-				dest: 'dist/assets/css/',
-				options: {
-					noAdvanced: true
-				}
-			}
-		},
-		image: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: 'src/img',
-					src: ['**/*.{png,jpg,gif,svg}'],
-					dest: 'dist/assets/img'
-				}]
-			}
-		},
-		// JavaScript難読化
+		// JavaScriptのminify
 		uglify: {
-			dist: {
-				files: [{
-					expand: true,
-					cwd: 'src/js',
-					src: ['**/*.js', '!**/*.min.js'],
-					dest: 'dist/assets/js'
-				}]
+			options: {
+				compress: {
+					warnings: false
+				},
+				mangle: true,
+				preserveComments: 'some'
+			},
+			assets: {
+				files: [
+					{
+						expand: true,
+						cwd: '<%= dir %>/assets/js',
+						src: ['**/*.js', '!**/*.min.js'],
+						dest: '<%= dir %>/assets/js/',
+						ext: '.js'
+					}
+				]
 			}
 		},
-		// compassのコンパイル
-		compass: {
-			dev: {
-				options: {
-					sassDir: 'src/css',
-					config: 'config.rb'
-				}
+		// 画像最適化
+		image: {
+			assets: {
+				files: [{
+					expand: true,
+					cwd: '<%= dir %>/assets/img/',
+					src: ['**/*.{png,jpg,gif,svg}'],
+					dest: '<%= dir %>/assets/img/'
+				}]
 			}
 		},
 		copy: {
-			// Bootstrap関連ファイルのコピー
-			bootstrap: {
-				files: [
-					{
-						expand: true,
-						cwd: "src/bootstrap/assets/javascripts/",
-						src: ["bootstrap.min.js"],
-						dest: "dev/assets/js"
-					}
-				]
+			js: {
+				expand: true,
+				cwd: 'src/js/',
+				src: ['**/*'],
+				dest: '<%= dir %>/assets/js/'
 			},
-			// 開発中のコピー
-			devjs: {
-				files: [
-					{
-						expand: true,
-						cwd: 'src/js/',
-						src: ['**/*.js'],
-						dest: 'dev/assets/js'
-					}
-				]
+			img: {
+				expand: true,
+				cwd: 'src/img/',
+				src: ['**/*'],
+				dest: '<%= dir %>/assets/img/'
 			},
-			// 開発中のコピー
-			devimg: {
-				files: [
-					{
-						expand: true,
-						cwd: 'src/img/',
-						src: ['**/*'],
-						dest: 'dev/assets/img'
-					}
-				]
+			lib: {
+				expand: true,
+				cwd: 'src/lib/',
+				src: ['**/*', '!**/.gitkeep'],
+				dest: '<%= dir %>/lib/'
 			},
 			dist: {
-				files: [
-					{
-						expand: true,
-						cwd: 'dev/',
-						src: ['**/*'],
-						dest: 'dist'
-					}
-				]
+				expand: true,
+				cwd: 'dev/',
+				src: ['**/*', '!assets/**/*', '!lib/**/*'],
+				dest: 'dist/'
 			}
 		},
-		// ファイル更新監視
+		// Clean
+		clean: {
+			bower: {
+				src: ['bower_components/**/*']
+			},
+			assets: {
+				src: ['<%= dir %>/assets/**/*']
+			},
+			lib: {
+				src: ['<%= dir %>/lib/**/*']
+			},
+			dist: {
+				src: ['dist/**/*']
+			}
+		},
+		// watch task
 		watch: {
-			// compassの自動コンパイル
-			compass: {
-				files: ['src/css/**/*.scss'],
-				tasks: ['compass:dev'],
+			scss: {
+				files: ['src/scss/**/*.scss'],
+				tasks: ['scsslint:assets', 'build-css']
 			},
-			// JavaScriptのコピー
-			devjs: {
+			js: {
 				files: ['src/js/**/*.js'],
-				tasks: ['copy:devjs'],
+				tasks: ['eslint:assets', 'build-js']
 			},
-			// JavaScriptのコピー
-			devimg: {
-				files: ['src/img/**/*'],
-				tasks: ['copy:devimg'],
+			img: {
+				files: ['src/img/**/*.{png,jpg,gif,svg}'],
+				tasks: ['build-img']
+			},
+			lib: {
+				files: ['src/lib/**/*'],
+				tasks: ['copy:lib']
+			},
+			configFiles: {
+				files: [
+					'Gruntfile.js',
+					'package.json',
+					'src/scss/.csscomb.json',
+					'src/scss/.scss-lint.yml',
+					'src/js/.eslintrc'
+				],
+				options: {
+					reload: true
+				}
 			}
 		},
 		// 簡易サーバ
 		browserSync: {
 			dev: {
 				bsFiles: {
-					src: ["dev/**/*"]
+					src: ['dev/**/*']
 				},
 				options: {
 					watchTask: true,
-					server: 'dev',
+					server: 'dev/',
 					port: 8000
-				}
-			}
-		},
-		// テストサーバ
-		connect: {
-			server: {
-				options: {
-					port: 8000,
-					hostname: '*',
-					base: 'dev'
 				}
 			}
 		}
 	});
 
-	// GruntFile.jsに記載されているパッケージを自動読み込み
-	for(taskName in pkg.devDependencies) {
-		if(taskName.substring(0, 6) == 'grunt-') {
+	for (taskName in pkg.devDependencies) {
+		if (taskName.substring(0, 6) === 'grunt-') {
 			grunt.loadNpmTasks(taskName);
 		}
 	}
 
-	// 開発用
-	grunt.registerTask('initdev', ['clean:dev', 'copy:bootstrap', 'compass:dev', 'copy:devjs', 'copy:devimg']);
-	grunt.registerTask('server', ['initdev', 'browserSync:dev', 'watch']);
+	// 出力フォルダをdistに切り替えるタスク
+	// まったく同じタスクを dev/ と dist/ で書く手間がなくなる
+	grunt.task.registerTask('release', 'Switch distribution mode', function() {
+		var dir = this.args[0] || 'dist';
+		grunt.config.merge({
+			dir: dir
+		});
+		grunt.log.ok('Set distribution mode. Output dir is "' + dir + '/"');
+	});
 
-	// ビルド
-	grunt.registerTask('build', ['clean:dist', 'initdev', 'copy:dist', 'uglify:dist', 'cssmin:dist', 'replace:banner', 'image:dist'])
+	grunt.registerTask('default', []);
+
+	// Inital
+	grunt.registerTask('init', ['clean:bower', 'clean:assets', 'clean:lib']);
+
+	// Test Task
+	grunt.registerTask('test', ['scsslint:assets', 'eslint:assets']);
+
+	// Library Install
+	grunt.registerTask('lib', ['bower:lib', 'copy:lib']);
+
+	// Optimize Task
+	grunt.registerTask('opt-assets', ['cssmin:assets', 'uglify:assets', 'image:assets']);
+
+	// Build
+	// CSS
+	grunt.registerTask('build-css', ['sass:assets', 'postcss:autoprefixer', 'csscomb:assets']);
+	// JavaScript
+	grunt.registerTask('build-js', ['copy:js']);
+	// Image
+	grunt.registerTask('build-img', ['copy:img']);
+	// Bundle Build Task
+	grunt.registerTask('build', ['build-css', 'build-js', 'build-img']);
+
+	// Develop
+	grunt.registerTask('dev', ['init', 'lib', 'build', 'browserSync:dev', 'watch']);
+
+	// Release
+	grunt.registerTask('dist', ['release', 'init', 'test', 'lib', 'build', 'opt-assets', 'copy:dist']);
+
 
 	grunt.registerTask('eatwarnings', function() {
 		grunt.warn = grunt.fail.warn = function(warning) {
