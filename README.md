@@ -1,5 +1,9 @@
 # Eli
 
+[![Build Status](https://travis-ci.org/windyakin/Eli.svg?branch=master)](https://travis-ci.org/windyakin/Eli)
+[![devDependency Status](https://david-dm.org/windyakin/Eli/dev-status.svg)](https://david-dm.org/windyakin/Eli#info=devDependencies)
+[![The MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Eliは完全オレオレ仕様のフロントエンド開発用テンプレートです。
 
 ## About
