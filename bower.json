@@ -26,6 +26,9 @@
     },
     "Honoka": {},
     "bootstrap-sass": {},
-    "bootstrap": {}
+    "bootstrap": {
+      "js": "dist/js/bootstrap**.js",
+      "fonts": "dist/fonts/**/*"
+    }
   }
 }
