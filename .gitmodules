@@ -1,6 +1,0 @@
-[submodule "src/bootstrap"]
-	path = src/bootstrap
-	url = https://github.com/twbs/bootstrap-sass.git
-[submodule "src/honoka"]
-	path = src/honoka
-	url = https://github.com/windyakin/Honoka.git
