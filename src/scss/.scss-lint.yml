@@ -17,7 +17,7 @@ linters:
 
   Comment:
     enabled: true
-    exclude: []
+    allowed: '^/\*!'
 
   DebugStatement:
     enabled: true
