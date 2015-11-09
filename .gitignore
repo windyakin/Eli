@@ -1,28 +1,29 @@
-#=============================================
-# My Original Set
-#=============================================
-data/
+# original setting
 dist/
-dev/assets/css/
-dev/assets/js/
-dev/assets/img/
+dev/assets/
+dev/lib/
 
-#=============================================
-# node.js & Grunt
-#=============================================
+### Bower ###
+bower_components
+.bower-cache
+.bower-registry
+.bower-tmp
+
+### node.js & Grunt ###
 node_modules/
 .grunt
 .tmp/
+npm-debug.log
 
-#=============================================
-# Sass/Compass
-#=============================================
+### Sass/Compass ###
 .sass-cache
 *.css.map
 
-#=============================================
-# Sublime Text
-#=============================================
+### Bundler ###
+.bundle/
+vendor/bundle/
+
+### Sublime Text ###
 *.sublime-workspace
 *.sublime-project
 
@@ -31,4 +32,3 @@ node_modules/
 *.stTheme.cache
 
 sftp-config.json
-

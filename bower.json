@@ -1,0 +1,28 @@
+{
+  "name": "Eli",
+  "description": "Eli is frontend development template for me.(include Honoka)",
+  "main": "Gruntfile.js",
+  "authors": [
+    "windyakin"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/windyakin/Eli",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "jquery": "~2.1.4",
+    "Honoka": "3.3.5-c",
+    "bootstrap-sass": "3.3.5"
+  },
+  "exportsOverride": {
+    "jquery": {
+      ".": "dist/jquery**.js"
+    }
+  }
+}
