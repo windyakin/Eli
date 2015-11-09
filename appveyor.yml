@@ -4,9 +4,8 @@ init:
   - git config --global core.autocrlf true
 
 environment:
-  matrix:
-    - nodejs_version: 4.2.2
-    - ruby_version: "22"
+  - nodejs_version: 4.2.2
+  - ruby_version: "22-x64"
 
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
@@ -16,7 +15,7 @@ install:
   - bundler --version
   - bundle install --without documentation --path vendor/bundle
   - ps: Install-Product node $env:nodejs_version
-  - npm install
+  - npm install --force
 
 build: off
 
