@@ -15,7 +15,7 @@ git:
 
 before_install:
   - rvm install 2.2.3
-  - rvm use 2.0.0 --fuzzy
+  - rvm use 2.2.3 --fuzzy
   - export GEMDIR=$(rvm gemdir)
   - ruby --version
   - gem --version
