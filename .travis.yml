@@ -14,9 +14,13 @@ git:
   submodules: false
 
 before_install:
-  - gem install bundler
-  - bundle install --path vendor/bundle
+  - ruby --version
+  - gem --version
+  - gem install bundler --quiet --no-ri --no-rdoc
+  - bundle --version
+  - bundle install --without documentation --path vendor/bundle
   - npm install -g grunt-cli
+  - grunt --version
 
 script:
   - npm start
