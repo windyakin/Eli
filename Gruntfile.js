@@ -27,6 +27,7 @@ module.exports = function(grunt) {
 				unixNewlines: true,
 				style: 'expanded',
 				bundleExec: true,
+				update: true,
 				loadPath: [
 					'bower_components/bootstrap-sass/assets/stylesheets/',
 					'bower_components/Honoka/scss/'
@@ -57,6 +58,7 @@ module.exports = function(grunt) {
 			autoprefixer: {
 				options: {
 					map: false,
+					diff: true,
 					processors: [
 						require('autoprefixer')({
 							browsers: [
