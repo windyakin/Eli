@@ -264,11 +264,11 @@ module.exports = function(grunt) {
 	grunt.registerTask('lib', ['bower:lib', 'copy:lib']);
 
 	// Optimize Task
-	grunt.registerTask('opt-assets', ['cssmin:assets', 'uglify:assets', 'image:assets']);
+	grunt.registerTask('opt-assets', ['csscomb:assets', 'cssmin:assets', 'uglify:assets', 'image:assets']);
 
 	// Build
 	// CSS
-	grunt.registerTask('build-css', ['sass:assets', 'postcss:autoprefixer', 'csscomb:assets']);
+	grunt.registerTask('build-css', ['sass:assets', 'postcss:autoprefixer']);
 	// JavaScript
 	grunt.registerTask('build-js', ['copy:js']);
 	// Image
