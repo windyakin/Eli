@@ -15,9 +15,9 @@
     "url": "https://github.com/windyakin/eli.git"
   },
   "devDependencies": {
-    "autoprefixer": "^6.1.0",
-    "bower": "^1.6.5",
-    "eslint": "^1.9.0",
+    "autoprefixer": "^6.1.2",
+    "bower": "^1.7.0",
+    "eslint": "^1.10.3",
     "grunt": "^0.4.5",
     "grunt-bower-task": "^0.4.0",
     "grunt-browser-sync": "^2.2.0",
@@ -26,11 +26,11 @@
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-sass": "^0.9.2",
-    "grunt-contrib-uglify": "^0.10.1",
+    "grunt-contrib-uglify": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-csscomb": "^3.1.0",
     "grunt-eslint": "^17.3.1",
-    "grunt-image": "^1.1.1",
+    "grunt-image": "^1.2.0",
     "grunt-postcss": "^0.7.1",
     "grunt-scss-lint": "^0.3.8"
   }
