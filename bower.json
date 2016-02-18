@@ -17,7 +17,7 @@
   ],
   "devDependencies": {
     "jquery": "~2.1.4",
-    "Honoka": "3.3.6",
+    "Honoka": "3.3.6-a",
     "bootstrap-sass": "3.3.6"
   },
   "exportsOverride": {
