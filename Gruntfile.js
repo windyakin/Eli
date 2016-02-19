@@ -24,11 +24,9 @@ module.exports = function(grunt) {
 		sass: {
 			options: {
 				sourcemap: 'none',
-				unixNewlines: true,
-				style: 'expanded',
-				bundleExec: true,
-				update: true,
-				loadPath: [
+				linefeed: 'lf',
+				outputStyle: 'expanded',
+				includePaths: [
 					'bower_components/bootstrap-sass/assets/stylesheets/',
 					'bower_components/Honoka/scss/'
 				]
