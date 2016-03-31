@@ -4,7 +4,7 @@ init:
   - git config --global core.autocrlf true
 
 environment:
-  nodejs_version: 4.3.1
+  nodejs_version: 4.4.1
   ruby_verison: 22-x64
 
 install:
