@@ -2,13 +2,41 @@
 
 module.exports = function(grunt) {
 
-	var pkg, taskName;
+	var pkg, bower, taskName;
 
 	pkg = grunt.file.readJSON('package.json');
+	bower = grunt.file.readJSON('bower.json');
 
 	grunt.initConfig({
 		// 出力フォルダ(デフォルトは dev/ 以下)
 		dir: 'dev',
+		bowerJSON: bower,
+		// バナー
+		banner:	'/*!\n' +
+						' * Honoka v<%= bowerJSON.devDependencies["Honoka"] %>\n' +
+						' * Website http://honokak.osaka/\n' +
+						' * Copyright 2015 windyakin\n' +
+						' * The MIT License\n' +
+						' */\n' +
+						'/*!\n' +
+						' * Bootstrap v<%= bowerJSON.devDependencies["bootstrap-sass"] %> (http://getbootstrap.com/)\n' +
+						' * Copyright 2011-<%= grunt.template.today("yyyy") %> Twitter, Inc\n' +
+						' * Licensed under the MIT license\n' +
+						' */\n',
+		// bannerの調整
+		replace: {
+			// バナーの追加
+			banner: {
+				src: ['<%= dir %>/assets/css/bootstrap**.css'],
+				dest: '<%= dir %>/assets/css/',
+				replacements: [
+					{
+						from: '@charset "UTF-8";',
+						to: '@charset "UTF-8";\n<%= banner %>'
+					}
+				]
+			}
+		},
 		// Bowerでインストールしたライブラリの配置
 		bower: {
 			lib: {
@@ -265,7 +293,7 @@ module.exports = function(grunt) {
 
 	// Build
 	// CSS
-	grunt.registerTask('build-css', ['sass:assets', 'postcss:autoprefixer']);
+	grunt.registerTask('build-css', ['sass:assets', 'postcss:autoprefixer', 'replace:banner']);
 	// JavaScript
 	grunt.registerTask('build-js', ['copy:js']);
 	// Image
