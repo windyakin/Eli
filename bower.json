@@ -18,16 +18,18 @@
   "devDependencies": {
     "jquery": "~2.1.4",
     "Honoka": "3.3.6-a",
-    "bootstrap-sass": "3.3.6"
+    "bootstrap-sass": "3.3.6",
+    "bootstrap": "3.3.6"
   },
   "exportsOverride": {
     "jquery": {
       ".": "dist/jquery**.js"
     },
     "Honoka": {},
-    "bootstrap-sass": {},
+    "bootstrap-sass": {
+    },
     "bootstrap": {
-      "js": "dist/js/bootstrap**.js",
+      "js": "dist/js/bootstrap.**js",
       "fonts": "dist/fonts/**/*"
     }
   }
