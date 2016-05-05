@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var fs = require('fs');
 var bowerJSON = JSON.parse(fs.readFileSync('./bower.json'));
+var del = require('del');
 
 var DEST_DIR = 'dev';
 var BANNER =	'/*!\n' +
@@ -23,6 +24,29 @@ var BANNER =	'/*!\n' +
  * ============================== */
 gulp.task('default', function() {
 	console.log("Hello, world!");
+});
+
+/* ================================
+ * Cleanup tasks
+ * ============================== */
+// clean bower dir
+gulp.task('clean-bower', function(callback) {
+	return del(['bower_components/**/*'], callback);
+});
+
+// clean libs dir
+gulp.task('clean-assets', function(callback) {
+	return del([DEST_DIR + '/assets/**/*'], callback);
+});
+
+// clean libs dir
+gulp.task('clean-lib', function(callback) {
+	return del([DEST_DIR + '/lib/**/*'], callback);
+});
+
+// clean dist dir
+gulp.task('clean-dist', function(callback) {
+	return del(['dist/**/*'], callback);
 });
 
 /* ================================
