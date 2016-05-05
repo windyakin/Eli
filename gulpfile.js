@@ -18,7 +18,7 @@ gulp.task('bower-dest', ['bower-install'], function() {
 		.pipe(plugins.mainBowerFiles({
 			includeDev: true
 		}))
-		.pipe(plugins.regexRename(/dist\//, ''))
+		.pipe(plugins.regexRename(/\/dist\//, '/'))
 		.pipe(gulp.dest('./'+ DEST_DIR +'lib'));
 });
 
