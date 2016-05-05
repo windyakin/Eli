@@ -2,8 +2,21 @@
 
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
+var fs = require('fs');
+var bowerJSON = JSON.parse(fs.readFileSync('./bower.json'));
 
 var DEST_DIR = 'dev';
+var BANNER =	'/*!\n' +
+							' * Honoka v' + bowerJSON.devDependencies["Honoka"] + '\n' +
+							' * Website http://honokak.osaka/\n' +
+							' * Copyright 2015 windyakin\n' +
+							' * The MIT License\n' +
+							' */\n' +
+							'/*!\n' +
+							' * Bootstrap v' + bowerJSON.devDependencies["bootstrap-sass"] + ' (http://getbootstrap.com/)\n' +
+							' * Copyright 2011-' + new Date().getFullYear() + ' Twitter, Inc\n' +
+							' * Licensed under the MIT license\n' +
+							' */';
 
 gulp.task('default', function() {
 	console.log("Hello, world!");
@@ -22,6 +35,62 @@ gulp.task('bower-dest', ['bower-install'], function() {
 		}))
 		.pipe(plugins.regexRename(/\/dist\//, '/'))
 		.pipe(gulp.dest('./'+ DEST_DIR +'/lib'));
+});
+
+// compile scss
+gulp.task('build-css', ['lint-scss'], function() {
+	var bootstrap = plugins.filter(['**/bootstrap.**css'], {restore: true});
+	return gulp.src(['src/scss/**/*.scss'])
+		// sass compile
+		.pipe(plugins.sass({
+			includePaths: [
+				'bower_components/bootstrap-sass/assets/stylesheets/',
+				'bower_components/Honoka/scss/'
+			],
+			sourcemap: 'none',
+			lineFeed: 'lf',
+			outputStyle: 'expanded'
+		}))
+		// autoprefixer
+		.pipe(plugins.postcss([
+			require('autoprefixer')({browsers: [
+				'Android 2.3',
+				'Android >= 4',
+				'Chrome >= 20',
+				'Firefox >= 24',
+				'Explorer >= 8',
+				'iOS >= 6',
+				'Opera >= 12',
+				'Safari >= 6'
+			]})
+		]))
+		// add banner
+		.pipe(bootstrap)
+		.pipe(plugins.replace(/^@charset "UTF-8";/i, '@charset "UTF-8";\n'+ BANNER))
+		.pipe(bootstrap.restore)
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
+});
+
+// optimize css
+gulp.task('opt-css', ['build-css'], function() {
+	return gulp.src(['./' + DEST_DIR + '/assets/**/*.css'])
+		.pipe(plugins.csscomb())
+		.pipe(plugins.postcss([
+			require('cssnano')()
+		]))
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
+});
+
+// linter scss
+gulp.task('lint-scss', function() {
+	return gulp.src(['src/scss/**/*.scss'])
+		.pipe(plugins.scssLint({
+			config: 'src/scss/.scss-lint.yml',
+			bundleExec: true
+		}))
+		.on('error', function(err) {
+			console.error(err);
+		});
 });
 
 gulp.task('release', function() {
