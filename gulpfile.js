@@ -29,18 +29,24 @@ gulp.task('default', function() {
  * Library related tasks
  * ============================== */
 // bower install
-gulp.task('bower-install', function() {
+gulp.task('install-bower', function() {
 	return plugins.bower();
 });
 
 // bower libs copy `lib/` directory
-gulp.task('bower-dest', ['bower-install'], function() {
+gulp.task('copy-bower', ['install-bower'], function() {
 	return gulp.src(['./bower.json'])
 		.pipe(plugins.mainBowerFiles({
 			includeDev: true
 		}))
 		.pipe(plugins.regexRename(/\/dist\//, '/'))
-		.pipe(gulp.dest('./'+ DEST_DIR +'/lib'));
+		.pipe(gulp.dest('./'+ DEST_DIR +'/lib/'));
+});
+
+// original libs copy `lib/` directory
+gulp.task('copy-libs', ['copy-bower'], function() {
+	return gulp.src(['src/lib/**/*', '!**/.gitkeep'])
+		.pipe(gulp.dest('./'+ DEST_DIR +'/lib/'))
 });
 
 /* ================================
