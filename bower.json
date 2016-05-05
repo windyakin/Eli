@@ -21,13 +21,26 @@
     "bootstrap-sass": "3.3.6",
     "bootstrap": "3.3.6"
   },
+	"overrides": {
+		"Honoka": {
+			"main": []
+		},
+		"bootstrap": {
+			"main": ["dist/fonts/**/*", "dist/js/bootstrap.**js"]
+		},
+		"bootstrap-sass": {
+			"main": []
+		},
+		"jquery": {
+			"main": ["dist/jquery.**js"]
+		}
+  },
   "exportsOverride": {
     "jquery": {
       ".": "dist/jquery**.js"
     },
     "Honoka": {},
-    "bootstrap-sass": {
-    },
+    "bootstrap-sass": {},
     "bootstrap": {
       "js": "dist/js/bootstrap.**js",
       "fonts": "dist/fonts/**/*"
