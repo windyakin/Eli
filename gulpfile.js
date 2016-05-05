@@ -40,13 +40,13 @@ gulp.task('copy-bower', ['install-bower'], function() {
 			includeDev: true
 		}))
 		.pipe(plugins.regexRename(/\/dist\//, '/'))
-		.pipe(gulp.dest('./'+ DEST_DIR +'/lib/'));
+		.pipe(gulp.dest(DEST_DIR + '/lib/'));
 });
 
 // original libs copy `lib/` directory
 gulp.task('copy-libs', ['copy-bower'], function() {
 	return gulp.src(['src/lib/**/*', '!**/.gitkeep'])
-		.pipe(gulp.dest('./'+ DEST_DIR +'/lib/'))
+		.pipe(gulp.dest(DEST_DIR + '/lib/'))
 });
 
 /* ================================
@@ -95,17 +95,17 @@ gulp.task('build-css', ['lint-scss'], function() {
 		.pipe(bootstrap)
 		.pipe(plugins.replace(/^@charset "UTF-8";/i, '@charset "UTF-8";\n'+ BANNER))
 		.pipe(bootstrap.restore)
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/css/'));
 });
 
 // optimize css
 gulp.task('opt-css', ['build-css'], function() {
-	return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: './' + DEST_DIR + '/assets/'})
+	return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: DEST_DIR + '/assets/'})
 		.pipe(plugins.csscomb())
 		.pipe(plugins.postcss([
 			require('cssnano')()
 		]))
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/css/'));
 });
 
 /* ================================
@@ -122,12 +122,12 @@ gulp.task('lint-js', function() {
 // build js
 gulp.task('build-js', ['lint-js'], function() {
 	return gulp.src(['src/js/**/*.js'])
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/js/'));
 });
 
 // optimize js
 gulp.task('opt-js', ['build-js'], function() {
-	return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: './' + DEST_DIR + '/assets/js/'})
+	return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: DEST_DIR + '/assets/js/'})
 		.pipe(plugins.uglify({
 			options: {
 				compsress: {
@@ -137,7 +137,7 @@ gulp.task('opt-js', ['build-js'], function() {
 				preserveComments: 'some'
 			}
 		}))
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/js/'));
 });
 
 /* ================================
@@ -146,14 +146,14 @@ gulp.task('opt-js', ['build-js'], function() {
 // build image
 gulp.task('build-img', function() {
 	return gulp.src(['src/img/**/*'])
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/img/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/img/'));
 });
 
 // optimize image
 gulp.task('opt-img', ['build-img'], function() {
-	return gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: './' + DEST_DIR + '/assets/img/'})
+	return gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: DEST_DIR + '/assets/img/'})
 		.pipe(plugins.imagemin())
-		.pipe(gulp.dest('./' + DEST_DIR + '/assets/img/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/img/'));
 });
 
 /* ================================
