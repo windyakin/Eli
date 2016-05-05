@@ -18,10 +18,16 @@ var BANNER =	'/*!\n' +
 							' * Licensed under the MIT license\n' +
 							' */';
 
+/* ================================
+ * Default task
+ * ============================== */
 gulp.task('default', function() {
 	console.log("Hello, world!");
 });
 
+/* ================================
+ * Library related tasks
+ * ============================== */
 // bower install
 gulp.task('bower-install', function() {
 	return plugins.bower();
@@ -37,6 +43,9 @@ gulp.task('bower-dest', ['bower-install'], function() {
 		.pipe(gulp.dest('./'+ DEST_DIR +'/lib'));
 });
 
+/* ================================
+ * CSS related tasks
+ * ============================== */
 // linter scss
 gulp.task('lint-scss', function() {
 	return gulp.src(['src/scss/**/*.scss'])
@@ -93,6 +102,9 @@ gulp.task('opt-css', ['build-css'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
 });
 
+/* ================================
+ * JavaScript related tasks
+ * ============================== */
 // linter js
 gulp.task('lint-js', function() {
 	return gulp.src(['src/js/**/*.js'])
@@ -122,6 +134,9 @@ gulp.task('opt-js', ['build-js'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
 });
 
+/* ================================
+ * Images related tasks
+ * ============================== */
 // build image
 gulp.task('build-img', function() {
 	return gulp.src(['src/img/**/*'])
@@ -135,9 +150,14 @@ gulp.task('opt-img', ['build-img'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/img/'));
 });
 
+/* ================================
+ * Other tasks
+ * ============================== */
 gulp.task('release', function() {
 	DEST_DIR = 'dist'
 });
 
-// mixed tasks
+/* ================================
+ * Mixed tasks
+ * ============================== */
 gulp.task('bower', ['bower-install', 'bower-dest']);
