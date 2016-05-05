@@ -37,6 +37,18 @@ gulp.task('bower-dest', ['bower-install'], function() {
 		.pipe(gulp.dest('./'+ DEST_DIR +'/lib'));
 });
 
+// linter scss
+gulp.task('lint-scss', function() {
+	return gulp.src(['src/scss/**/*.scss'])
+		.pipe(plugins.scssLint({
+			config: 'src/scss/.scss-lint.yml',
+			bundleExec: true
+		}))
+		.on('error', function(err) {
+			console.error(err);
+		});
+});
+
 // compile scss
 gulp.task('build-css', ['lint-scss'], function() {
 	var bootstrap = plugins.filter(['**/bootstrap.**css'], {restore: true});
@@ -81,16 +93,6 @@ gulp.task('opt-css', ['build-css'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
 });
 
-// linter scss
-gulp.task('lint-scss', function() {
-	return gulp.src(['src/scss/**/*.scss'])
-		.pipe(plugins.scssLint({
-			config: 'src/scss/.scss-lint.yml',
-			bundleExec: true
-		}))
-		.on('error', function(err) {
-			console.error(err);
-		});
 });
 
 gulp.task('release', function() {
