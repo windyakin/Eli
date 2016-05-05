@@ -93,6 +93,33 @@ gulp.task('opt-css', ['build-css'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
 });
 
+// linter js
+gulp.task('lint-js', function() {
+	return gulp.src(['src/js/**/*.js'])
+		.pipe(plugins.eslint('./src/js/.eslintrc'))
+		.pipe(plugins.eslint.format())
+		.pipe(plugins.eslint.failAfterError());
+});
+
+// build js
+gulp.task('build-js', ['lint-js'], function() {
+	return gulp.src(['src/js/**/*.js'])
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
+});
+
+// optimize js
+gulp.task('opt-js', ['build-js'], function() {
+	return gulp.src(['src/js/**/*.js'])
+		.pipe(plugins.uglify({
+			options: {
+				compsress: {
+					warnings: false
+				},
+				mangle: true,
+				preserveComments: 'some'
+			}
+		}))
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
 });
 
 gulp.task('release', function() {
