@@ -122,6 +122,19 @@ gulp.task('opt-js', ['build-js'], function() {
 		.pipe(gulp.dest('./' + DEST_DIR + '/assets/js/'));
 });
 
+// build image
+gulp.task('build-img', function() {
+	return gulp.src(['src/img/**/*'])
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/img/'));
+});
+
+// optimize image
+gulp.task('opt-img', ['build-img'], function() {
+	return gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: './' + DEST_DIR + '/assets/img/'})
+		.pipe(plugins.imagemin())
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/img/'));
+});
+
 gulp.task('release', function() {
 	DEST_DIR = 'dist'
 });
