@@ -85,7 +85,7 @@ gulp.task('build-css', ['lint-scss'], function() {
 
 // optimize css
 gulp.task('opt-css', ['build-css'], function() {
-	return gulp.src(['./' + DEST_DIR + '/assets/**/*.css'])
+	return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: './' + DEST_DIR + '/assets/'})
 		.pipe(plugins.csscomb())
 		.pipe(plugins.postcss([
 			require('cssnano')()
@@ -109,7 +109,7 @@ gulp.task('build-js', ['lint-js'], function() {
 
 // optimize js
 gulp.task('opt-js', ['build-js'], function() {
-	return gulp.src(['src/js/**/*.js'])
+	return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: './' + DEST_DIR + '/assets/js/'})
 		.pipe(plugins.uglify({
 			options: {
 				compsress: {
