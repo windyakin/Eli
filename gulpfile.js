@@ -188,6 +188,23 @@ gulp.task('opt-img', ['build-img'], function() {
 });
 
 /* ================================
+ * Watch tasks
+ * ============================== */
+gulp.task('watch', function() {
+	var message = function(ev) {
+		console.log('File: ' + ev.path + ' was ' + ev.type + ', running tasks...')
+	};
+	gulp.watch(['src/scss/**/*.scss'], ['lint-scss', 'build-css'])
+		.on('change', message);
+	gulp.watch(['src/js/**/*.js'], ['lint-js', 'build-js'])
+		.on('change', message);
+	gulp.watch(['src/img/**/*'], ['build-img'])
+		.on('change', message);
+	gulp.watch(['src/lib/**/*'], ['copy-libs'])
+		.on('change', message);
+});
+
+/* ================================
  * Other tasks
  * ============================== */
 gulp.task('release', function() {
