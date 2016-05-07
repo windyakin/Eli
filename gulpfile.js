@@ -92,6 +92,12 @@ gulp.task('lint-scss', function() {
 gulp.task('build-css', ['lint-scss'], function() {
 	var bootstrap = plugins.filter(['**/bootstrap.**css'], {restore: true});
 	return gulp.src(['src/scss/**/*.scss'])
+		// plumber
+		.pipe(plugins.plumber({
+			errorHandler: function(err) {
+				this.end();
+			}
+		}))
 		// sass compile
 		.pipe(plugins.sass({
 			includePaths: [
@@ -102,6 +108,7 @@ gulp.task('build-css', ['lint-scss'], function() {
 			lineFeed: 'lf',
 			outputStyle: 'expanded'
 		}))
+		.pipe(plugins.plumber.stop())
 		// autoprefixer
 		.pipe(plugins.postcss([
 			require('autoprefixer')({browsers: [
