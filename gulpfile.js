@@ -5,6 +5,8 @@ var plugins = require('gulp-load-plugins')();
 var fs = require('fs');
 var bowerJSON = JSON.parse(fs.readFileSync('./bower.json'));
 var del = require('del');
+var browserSync = require('browser-sync');
+var runSequence = require('run-sequence');
 
 var DEST_DIR = 'dev';
 var BANNER =	'/*!\n' +
@@ -18,6 +20,16 @@ var BANNER =	'/*!\n' +
 							' * Copyright 2011-' + new Date().getFullYear() + ' Twitter, Inc\n' +
 							' * Licensed under the MIT license\n' +
 							' */';
+var AUTOPREFIX = [
+		'Android 2.3',
+		'Android >= 4',
+		'Chrome >= 20',
+		'Firefox >= 24',
+		'Explorer >= 8',
+		'iOS >= 6',
+		'Opera >= 12',
+		'Safari >= 6'
+];
 
 /* ================================
  * Default task
@@ -30,22 +42,22 @@ gulp.task('default', function() {
  * Cleanup tasks
  * ============================== */
 // clean bower dir
-gulp.task('clean-bower', function(callback) {
+gulp.task('clean:bower', function(callback) {
 	return del(['bower_components/**/*'], callback);
 });
 
 // clean libs dir
-gulp.task('clean-assets', function(callback) {
+gulp.task('clean:assets', function(callback) {
 	return del([DEST_DIR + '/assets/**/*'], callback);
 });
 
 // clean libs dir
-gulp.task('clean-lib', function(callback) {
+gulp.task('clean:lib', function(callback) {
 	return del([DEST_DIR + '/lib/**/*'], callback);
 });
 
 // clean dist dir
-gulp.task('clean-dist', function(callback) {
+gulp.task('clean:dist', function(callback) {
 	return del(['dist/**/*'], callback);
 });
 
@@ -53,12 +65,12 @@ gulp.task('clean-dist', function(callback) {
  * Library related tasks
  * ============================== */
 // bower install
-gulp.task('install-bower', function() {
+gulp.task('install:bower', ['clean:bower'], function() {
 	return plugins.bower();
 });
 
 // bower libs copy `lib/` directory
-gulp.task('copy-bower', ['install-bower'], function() {
+gulp.task('copy:bower', ['install:bower'], function() {
 	return gulp.src(['./bower.json'])
 		.pipe(plugins.mainBowerFiles({
 			includeDev: true
@@ -68,7 +80,7 @@ gulp.task('copy-bower', ['install-bower'], function() {
 });
 
 // original libs copy `lib/` directory
-gulp.task('copy-libs', ['copy-bower'], function() {
+gulp.task('copy:lib', ['clean:lib', 'copy:bower'], function() {
 	return gulp.src(['src/lib/**/*', '!**/.gitkeep'])
 		.pipe(gulp.dest(DEST_DIR + '/lib/'))
 });
@@ -77,7 +89,7 @@ gulp.task('copy-libs', ['copy-bower'], function() {
  * CSS related tasks
  * ============================== */
 // linter scss
-gulp.task('lint-scss', function() {
+gulp.task('lint:scss', function() {
 	return gulp.src(['src/scss/**/*.scss'])
 		.pipe(plugins.scssLint({
 			config: 'src/scss/.scss-lint.yml',
@@ -89,12 +101,13 @@ gulp.task('lint-scss', function() {
 });
 
 // compile scss
-gulp.task('build-css', ['lint-scss'], function() {
+gulp.task('build:css', ['lint:scss'], function() {
 	var bootstrap = plugins.filter(['**/bootstrap.**css'], {restore: true});
 	return gulp.src(['src/scss/**/*.scss'])
 		// plumber
 		.pipe(plugins.plumber({
 			errorHandler: function(err) {
+				console.log(err.message);
 				this.end();
 			}
 		}))
@@ -111,39 +124,31 @@ gulp.task('build-css', ['lint-scss'], function() {
 		.pipe(plugins.plumber.stop())
 		// autoprefixer
 		.pipe(plugins.postcss([
-			require('autoprefixer')({browsers: [
-				'Android 2.3',
-				'Android >= 4',
-				'Chrome >= 20',
-				'Firefox >= 24',
-				'Explorer >= 8',
-				'iOS >= 6',
-				'Opera >= 12',
-				'Safari >= 6'
-			]})
+			require('autoprefixer')({browsers: AUTOPREFIX})
 		]))
 		// add banner
 		.pipe(bootstrap)
 		.pipe(plugins.replace(/^@charset "UTF-8";/i, '@charset "UTF-8";\n'+ BANNER))
 		.pipe(bootstrap.restore)
-		.pipe(gulp.dest(DEST_DIR + '/assets/css/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/css/'))
+		.pipe(browserSync.stream());
 });
 
 // optimize css
-gulp.task('opt-css', ['build-css'], function() {
-	return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: DEST_DIR + '/assets/'})
+gulp.task('opt:css', function() {
+	return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: DEST_DIR + '/assets/css/'})
 		.pipe(plugins.csscomb())
 		.pipe(plugins.postcss([
 			require('cssnano')()
 		]))
-		.pipe(gulp.dest(DEST_DIR + '/assets/css/'));
+		.pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
 });
 
 /* ================================
  * JavaScript related tasks
  * ============================== */
 // linter js
-gulp.task('lint-js', function() {
+gulp.task('lint:js', function() {
 	return gulp.src(['src/js/**/*.js'])
 		.pipe(plugins.eslint('./src/js/.eslintrc'))
 		.pipe(plugins.eslint.format())
@@ -151,13 +156,14 @@ gulp.task('lint-js', function() {
 });
 
 // build js
-gulp.task('build-js', ['lint-js'], function() {
+gulp.task('build:js', ['lint:js'], function() {
 	return gulp.src(['src/js/**/*.js'])
-		.pipe(gulp.dest(DEST_DIR + '/assets/js/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/js/'))
+		.pipe(browserSync.stream());
 });
 
 // optimize js
-gulp.task('opt-js', ['build-js'], function() {
+gulp.task('opt:js', function() {
 	return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: DEST_DIR + '/assets/js/'})
 		.pipe(plugins.uglify({
 			options: {
@@ -175,13 +181,14 @@ gulp.task('opt-js', ['build-js'], function() {
  * Images related tasks
  * ============================== */
 // build image
-gulp.task('build-img', function() {
+gulp.task('build:img', function() {
 	return gulp.src(['src/img/**/*'])
-		.pipe(gulp.dest(DEST_DIR + '/assets/img/'));
+		.pipe(gulp.dest(DEST_DIR + '/assets/img/'))
+		.pipe(browserSync.stream());
 });
 
 // optimize image
-gulp.task('opt-img', ['build-img'], function() {
+gulp.task('opt:img', function() {
 	return gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: DEST_DIR + '/assets/img/'})
 		.pipe(plugins.imagemin())
 		.pipe(gulp.dest(DEST_DIR + '/assets/img/'));
@@ -192,26 +199,57 @@ gulp.task('opt-img', ['build-img'], function() {
  * ============================== */
 gulp.task('watch', function() {
 	var message = function(ev) {
-		console.log('File: ' + ev.path + ' was ' + ev.type + ', running tasks...')
+		console.log('File: ' + ev.path + ' was ' + ev.type + ', running tasks...');
 	};
-	gulp.watch(['src/scss/**/*.scss'], ['lint-scss', 'build-css'])
+	gulp.watch(['src/scss/**/*.scss'], ['build:css'])
 		.on('change', message);
-	gulp.watch(['src/js/**/*.js'], ['lint-js', 'build-js'])
+	gulp.watch(['src/js/**/*.js'], ['build:js'])
 		.on('change', message);
-	gulp.watch(['src/img/**/*'], ['build-img'])
+	gulp.watch(['src/img/**/*'], ['build:img'])
 		.on('change', message);
-	gulp.watch(['src/lib/**/*'], ['copy-libs'])
+	gulp.watch(['src/lib/**/*'], ['copy:lib'])
 		.on('change', message);
+});
+
+/* ================================
+ * BrowserSync
+ * ============================== */
+gulp.task('serve', function() {
+	browserSync = browserSync.create();
+	console.log('task browserSync')
+	browserSync.init({
+		server: 'dev/',
+		port: 8000
+	});
 });
 
 /* ================================
  * Other tasks
  * ============================== */
+// change output dir
 gulp.task('release', function() {
 	DEST_DIR = 'dist'
+});
+
+// copy to dist/ from dev/
+gulp.task('copy:dist', function() {
+	gulp.src(['**/*', '!assets/**/*', '!lib/**/*'], {cwd: 'dev/'})
+		.pipe(gulp.dest('dist/'));
 });
 
 /* ================================
  * Mixed tasks
  * ============================== */
-gulp.task('bower', ['bower-install', 'bower-dest']);
+gulp.task('init', ['clean:bower', 'clean:assets', 'clean:lib']);
+gulp.task('lib', ['install:bower', 'copy:bower', 'copy:lib']);
+gulp.task('build', ['build:css', 'build:js', 'build:img']);
+gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
+gulp.task('server', ['serve', 'watch']);
+
+gulp.task('dev', function() {
+	runSequence(['init', 'lib'], ['build'], ['serve', 'watch']);
+});
+gulp.task('dest', function() {
+	runSequence(['release'], ['clean:dist', 'init', 'lib'], ['build', 'copy:dist'], ['optimize']);
+});
+

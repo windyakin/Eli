@@ -17,6 +17,7 @@
   "devDependencies": {
     "autoprefixer": "^6.3.3",
     "bower": "^1.7.9",
+    "browser-sync": "^2.12.5",
     "cssnano": "^3.5.2",
     "del": "^2.2.0",
     "eslint": "^2.1.0",
@@ -54,6 +55,7 @@
     "gulp-sass": "^2.3.1",
     "gulp-scss-lint": "^0.3.9",
     "gulp-uglify": "^1.5.3",
-    "main-bower-files": "^2.13.0"
+    "main-bower-files": "^2.13.0",
+    "run-sequence": "^1.2.0"
   }
 }
