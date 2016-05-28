@@ -250,7 +250,7 @@ gulp.task('server', ['serve', 'watch']);
 gulp.task('dev', function() {
 	runSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
 });
-gulp.task('dest', function() {
+gulp.task('dist', function() {
 	runSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build', 'copy:dist'], ['optimize']);
 });
 
