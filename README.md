@@ -19,7 +19,7 @@ Eliは完全オレオレ仕様のフロントエンド開発用テンプレー�
 ビルド環境を使用するためには以下のプログラムとライブラリが必要です。なお説明の際に記述しているバージョンはこのREADME.mdを執筆している時点(2015年11月)の安定版・最新版のバージョンです。
 
  * Node.js
-   * Grunt
+   * gulp
    * Bower
  * Ruby
    * Bundler
@@ -59,17 +59,17 @@ Node.js はリリース間隔が短いため、インストーラからインス
 % npm install
 ```
 
-#### Gruntのインストール
+#### gulpのインストール
 
- * [Grunt](http://gruntjs.com/)
+ * [gulp.js](http://gulpjs.com/)
 
-タスクランナーには(いろいろな制約のせいで未だに) Grunt を使用しています。 Grunt そのものが npm を通じて配信されているので、 ``package.json`` にもインストールをするように記述してありますが、ここではコマンドラインから直接利用できるようにするために ``-g`` オプションを指定してインストールを行います。
+タスクランナーに gulp を使用しています。 gulp そのものが npm を通じて配信されているので、 ``package.json`` にもインストールをするように記述してありますが、ここではコマンドラインから直接利用できるようにするために ``-g`` オプションを指定してインストールを行います。
 
 ```
-% npm insatll -g grunt-cli
-% grunt --version
-grunt-cli v0.1.13
-grunt v0.4.5
+% npm install --global gulp-cli
+% gulp --version
+[hh:mm:ss] CLI version 3.9.1
+[hh:mm:ss] Local version 3.9.1
 ```
 
 #### Bowerのインストール
@@ -190,12 +190,12 @@ eli/
 * ``dist/assets/`` には ``src/`` から **minifyされた** コードが生成される
 
 
-### Grunt Task
+### gulp Task
 
 #### Development (Test)
 
 ```
-% grunt dev
+% gulp dev
 ```
 
 * 開発用
@@ -209,7 +209,7 @@ eli/
 #### Distribute Build
 
 ```
-% grunt dist
+% gulp dist
 ```
 
 * リリース用
@@ -232,17 +232,17 @@ eli/
 * ``lib``
   * Bower で指定しているコンポーネントをインストールして ``{dev,dist}/lib/`` に配置
   * ``src/lib/`` の内容を ``{dev,dist}/lib/`` にコピーする
-* ``opt-assets``
+* ``optimize``
   * ``assets/`` 内のファイルをminifyしたり最適化したりする
-* ``build-css``
+* ``build:css``
   * ``src/scss/`` 以下のSCSSをビルドし ``{dev,dist}/assets/css/`` に出力
   * ベンダープレフィックスを付与
   * プロパティの順序を並べかえる
   * linterによる構文チェックやminifyは行わない
-* ``build-js``
+* ``build:js``
   * ``src/js/`` 以下のJavaScriptを ``{dev,dist}/assets/js`` にコピー
   * linterによる構文チェックやminifyは行わない
-* ``build-img``
+* ``build:img``
   * ``src/`` 以下の画像ファイルを ``{dev,dist}/assets/img`` にコピー
   * 最適化は行わない
 * ``build``
