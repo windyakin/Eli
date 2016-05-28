@@ -241,15 +241,16 @@ gulp.task('copy:dist', function() {
  * Mixed tasks
  * ============================== */
 gulp.task('init', ['clean:bower', 'clean:assets', 'clean:lib']);
+gulp.task('test', ['lint:scss', 'lint:js']);
 gulp.task('lib', ['install:bower', 'copy:bower', 'copy:lib']);
 gulp.task('build', ['build:css', 'build:js', 'build:img']);
 gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
 gulp.task('server', ['serve', 'watch']);
 
 gulp.task('dev', function() {
-	runSequence(['init', 'lib'], ['build'], ['serve', 'watch']);
+	runSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
 });
 gulp.task('dest', function() {
-	runSequence(['release'], ['clean:dist', 'init', 'lib'], ['build', 'copy:dist'], ['optimize']);
+	runSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build', 'copy:dist'], ['optimize']);
 });
 
