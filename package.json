@@ -7,8 +7,8 @@
   "license": "MIT",
   "main": "Gruntfile.js",
   "scripts": {
-    "test": "grunt test",
-    "start": "grunt dist"
+    "test": "gulp test",
+    "start": "gulp dist"
   },
   "repository": {
     "type": "git",
