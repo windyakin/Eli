@@ -1,7 +1,7 @@
 {
   "name": "Eli",
   "description": "Eli is frontend development template for me.(include Honoka)",
-  "main": "Gruntfile.js",
+  "main": "gulpfile.js",
   "authors": [
     "windyakin"
   ],
