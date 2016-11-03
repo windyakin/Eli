@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - '4.4'
+  - '6.9.x'
 
 sudo: false
 
@@ -14,16 +14,14 @@ git:
   submodules: false
 
 before_install:
-  - rvm install 2.2.3
-  - rvm use 2.2.3 --fuzzy
+  - rvm install 2.3.1
+  - rvm use 2.3.1 --fuzzy
   - export GEMDIR=$(rvm gemdir)
   - ruby --version
   - gem --version
   - gem install bundler --quiet --no-ri --no-rdoc
   - bundle --version
   - bundle install --without documentation --path vendor/bundle
-  - npm install -g grunt-cli
-  - grunt --version
 
 script:
   - npm start
