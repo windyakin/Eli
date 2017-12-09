@@ -5,14 +5,8 @@ init:
 
 environment:
   nodejs_version: 8
-  ruby_version: 242-x64
 
 install:
-  - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
-  - ruby --version
-  - gem --version
-  - bundle --version
-  - bundle install --without documentation --path vendor/bundle
   - ps: Install-Product node $env:nodejs_version
   - npm install --force
 
@@ -29,4 +23,3 @@ matrix:
 cache:
   - C:\Users\appveyor\AppData\Roaming\npm-cache -> package.json
   - node_modules -> package.json
-  - vendor
