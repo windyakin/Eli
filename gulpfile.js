@@ -51,11 +51,6 @@ gulp.task('default', function() {
 /* ================================
  * Cleanup tasks
  * ============================== */
-// clean bower dir
-gulp.task('clean:bower', function(callback) {
-	return del(['bower_components/**/*'], callback);
-});
-
 // clean libs dir
 gulp.task('clean:assets', function(callback) {
 	return del([DEST_DIR + '/assets/**/*'], callback);
