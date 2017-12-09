@@ -91,9 +91,8 @@ gulp.task('copy:lib', ['clean:lib', 'copy:bower'], function() {
 // linter scss
 gulp.task('lint:scss', function() {
 	return gulp.src(['src/scss/**/*.scss'])
-		.pipe(plugins.scssLint({
+		.pipe(plugins.sassLint({
 			config: 'src/scss/.scss-lint.yml',
-			bundleExec: true
 		}))
 		.on('error', function(err) {
 			console.error(err);

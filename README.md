@@ -21,9 +21,6 @@ Eliは完全オレオレ仕様のフロントエンド開発用テンプレー�
  * Node.js
    * gulp
    * Bower
- * Ruby
-   * Bundler
-   * Sass, scss_lint etc...
 
 ### Node.js
 
@@ -86,48 +83,6 @@ jQueryをはじめとするコンポーネントのインストールには Bowe
 
 Bower からコンポーネントをインストールする処理は既に Grunt でタスクが定義されています。
 
-
-### Ruby
-
-#### Ruby本体のインストール
-
- * [Ruby](https://www.ruby-lang.org/ja/) - v2.4.2
-
-Sassのコンパイルや構文チェック(Linter)にはRubyを使用します。OS Xやその他Unix/Linux系OSを使用している場合には、Rubyのバージョン管理が容易に行える [rbenv](https://github.com/sstephenson/rbenv) を使用すると便利です。
-
-```
-% ruby -v
-ruby 2.2.3p173 (2015-08-18 revision 51636) [x86_64-darwin14]
-```
-
-
-#### Bundlerのインストール
-
-Rubyのパッケージ管理システムは [RubyGems](https://rubygems.org/) ですが、プロジェクトごとに異なるバージョンのパッケージを利用したい場合に色々な不都合が生じます。そこで、パッケージの管理には [Bundler](http://bundler.io/) というものを使用します。
-
-とはいえ Bundler 本体は RubyGems を使ってインストールします。
-
-```
-% gem install bundler
-% bundle -v
-Bundler version 1.16.0
-```
-
-
-#### Rubyの各種パッケージのインストール
-
-Bundler をインストールしたら各種パッケージをインストールします。インストールするパッケージとバージョンは ``Gemfile`` に記述されているので以下のコマンドによって一括でインストールが行えます。
-
-```
-% bundle install --path vendor/bundle
-```
-
-これで ``vendor/bundle/`` 以下にインストールされます。 Bundler を使ってインストールしたコマンドは ``bundle exec [***]`` で使用することができるはずです。試しにSassコンパイラを起動してみましょう。
-
-```
-% bundle exec sass -v
-Sass 3.5.3 (Selective Steve)
-```
 
 これでビルド環境の準備は完了です。お疲れ様でした！
 
