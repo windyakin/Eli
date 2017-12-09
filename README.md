@@ -29,13 +29,13 @@ Eliは完全オレオレ仕様のフロントエンド開発用テンプレー�
 
 #### Node.js 本体のインストール
 
- * [Node.js](https://nodejs.org/en/) - v4.2.x
+ * [Node.js](https://nodejs.org/en/) - v8.9.x
 
 基本的にはNode.jsのページからインストーラーをダウンロードし、インストールすることで使用できるようになります。
 
 ```
 % node -v
-v4.2.2
+v8.9.3
 ```
 
 ##### 備考
@@ -50,7 +50,7 @@ Node.js はリリース間隔が短いため、インストーラからインス
 
 ```
 % npm -v
-3.3.12
+5.5.1
 ```
 
 また、npm からインストールするパッケージは ``package.json`` に書いてあるので、 以下のコマンドにより一括でインストールできます。
@@ -91,7 +91,7 @@ Bower からコンポーネントをインストールする処理は既に Grun
 
 #### Ruby本体のインストール
 
- * [Ruby](https://www.ruby-lang.org/ja/) - v2.2.3
+ * [Ruby](https://www.ruby-lang.org/ja/) - v2.4.2
 
 Sassのコンパイルや構文チェック(Linter)にはRubyを使用します。OS Xやその他Unix/Linux系OSを使用している場合には、Rubyのバージョン管理が容易に行える [rbenv](https://github.com/sstephenson/rbenv) を使用すると便利です。
 
@@ -110,7 +110,7 @@ Rubyのパッケージ管理システムは [RubyGems](https://rubygems.org/) �
 ```
 % gem install bundler
 % bundle -v
-Bundler version 1.10.6
+Bundler version 1.16.0
 ```
 
 
@@ -126,7 +126,7 @@ Bundler をインストールしたら各種パッケージをインストール
 
 ```
 % bundle exec sass -v
-Sass 3.4.19 (Selective Steve)
+Sass 3.5.3 (Selective Steve)
 ```
 
 これでビルド環境の準備は完了です。お疲れ様でした！
