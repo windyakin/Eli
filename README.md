@@ -20,7 +20,6 @@ Eliは完全オレオレ仕様のフロントエンド開発用テンプレー�
 
  * Node.js
    * gulp
-   * Bower
 
 ### Node.js
 
@@ -68,20 +67,6 @@ Node.js はリリース間隔が短いため、インストーラからインス
 [hh:mm:ss] CLI version 3.9.1
 [hh:mm:ss] Local version 3.9.1
 ```
-
-#### Bowerのインストール
-
- * [Bower](http://bower.io/)
-
-jQueryをはじめとするコンポーネントのインストールには Bower を利用しています。これもGruntと同じくコマンドラインから直接利用できるようにするために、 npm から ``-g`` オプションを指定してインストールを行います。
-
-```
-% npm install -g bower
-% bower -v
-1.6.5
-```
-
-Bower からコンポーネントをインストールする処理は既に Grunt でタスクが定義されています。
 
 
 これでビルド環境の準備は完了です。お疲れ様でした！

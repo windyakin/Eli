@@ -3,20 +3,20 @@
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var fs = require('fs');
-var bowerJSON = JSON.parse(fs.readFileSync('./bower.json'));
+var packageJSON = JSON.parse(fs.readFileSync('./package.json'));
 var del = require('del');
 var browserSync = require('browser-sync');
 var runSequence = require('run-sequence');
 
 var DEST_DIR = 'dev';
 var BANNER =	'/*!\n' +
-							' * Honoka v' + bowerJSON.devDependencies["Honoka"] + '\n' +
+							' * Honoka v' + packageJSON.devDependencies["bootstrap-honoka"] + '\n' +
 							' * Website http://honokak.osaka/\n' +
 							' * Copyright 2015 windyakin\n' +
 							' * The MIT License\n' +
 							' */\n' +
 							'/*!\n' +
-							' * Bootstrap v' + bowerJSON.devDependencies["bootstrap-sass"] + ' (http://getbootstrap.com/)\n' +
+							' * Bootstrap v' + packageJSON.devDependencies["bootstrap"] + ' (http://getbootstrap.com/)\n' +
 							' * Copyright 2011-' + new Date().getFullYear() + ' Twitter, Inc\n' +
 							' * Licensed under the MIT license\n' +
 							' */';
@@ -30,6 +30,16 @@ var AUTOPREFIX = [
 		'Opera >= 12',
 		'Safari >= 6'
 ];
+
+var PACKAGE_LIBS_CONFIG = {
+	"bootstrap": [
+		"dist/fonts/**/*",
+		"dist/js/bootstrap.**js"
+	],
+	"jquery": [
+		"dist/jquery.**js"
+	]
+};
 
 /* ================================
  * Default task
@@ -64,23 +74,21 @@ gulp.task('clean:dist', function(callback) {
 /* ================================
  * Library related tasks
  * ============================== */
-// bower install
-gulp.task('install:bower', ['clean:bower'], function() {
-	return plugins.bower();
-});
-
-// bower libs copy `lib/` directory
-gulp.task('copy:bower', ['install:bower'], function() {
-	return gulp.src(['./bower.json'])
-		.pipe(plugins.mainBowerFiles({
-			includeDev: true
-		}))
-		.pipe(plugins.regexRename(/\/dist\//, '/'))
+// npm libs copy `lib/` directory
+gulp.task('copy:npm', ['clean:lib'], function() {
+	var pathes = [];
+	for (var key in PACKAGE_LIBS_CONFIG) {
+		PACKAGE_LIBS_CONFIG[key].forEach(function(value) {
+			pathes.push(`node_modules/${key}/${value}`);
+		});
+	}
+	return gulp.src(pathes, {base: 'node_modules'})
+		.pipe(plugins.regexRename(/\/dist\//, "/"))
 		.pipe(gulp.dest(DEST_DIR + '/lib/'));
 });
 
 // original libs copy `lib/` directory
-gulp.task('copy:lib', ['clean:lib', 'copy:bower'], function() {
+gulp.task('copy:lib', ['clean:lib', 'copy:npm'], function() {
 	return gulp.src(['src/lib/**/*', '!**/.gitkeep'])
 		.pipe(gulp.dest(DEST_DIR + '/lib/'))
 });
@@ -113,8 +121,8 @@ gulp.task('build:css', ['lint:scss'], function() {
 		// sass compile
 		.pipe(plugins.sass({
 			includePaths: [
-				'bower_components/bootstrap-sass/assets/stylesheets/',
-				'bower_components/Honoka/scss/'
+				'node_modules/bootstrap-sass/assets/stylesheets/',
+				'node_modules/bootstrap-honoka/scss/'
 			],
 			sourcemap: 'none',
 			lineFeed: 'lf',
@@ -231,9 +239,9 @@ gulp.task('copy:dist', function() {
 /* ================================
  * Mixed tasks
  * ============================== */
-gulp.task('init', ['clean:bower', 'clean:assets', 'clean:lib']);
+gulp.task('init', ['clean:assets', 'clean:lib']);
 gulp.task('test', ['lint:scss', 'lint:js']);
-gulp.task('lib', ['install:bower', 'copy:bower', 'copy:lib']);
+gulp.task('lib', ['copy:lib']);
 gulp.task('build', ['build:css', 'build:js', 'build:img']);
 gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
 gulp.task('server', ['serve', 'watch']);
