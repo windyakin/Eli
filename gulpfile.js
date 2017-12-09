@@ -165,15 +165,7 @@ gulp.task('build:js', ['lint:js'], function() {
 // optimize js
 gulp.task('opt:js', function() {
 	return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: DEST_DIR + '/assets/js/'})
-		.pipe(plugins.uglify({
-			options: {
-				compsress: {
-					warnings: false
-				},
-				mangle: true,
-				preserveComments: 'some'
-			}
-		}))
+		.pipe(plugins.uglify({output: {comments: /^!/}}))
 		.pipe(gulp.dest(DEST_DIR + '/assets/js/'));
 });
 
