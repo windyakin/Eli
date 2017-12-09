@@ -5,14 +5,13 @@ init:
 
 environment:
   nodejs_version: 8
-  ruby_version: 24-x64
+  ruby_version: 242-x64
 
 install:
   - SET PATH=C:\Ruby%ruby_version%\bin;%PATH%
   - ruby --version
   - gem --version
-  - gem install bundler --quiet --no-ri --no-rdoc
-  - bundler --version
+  - bundle --version
   - bundle install --without documentation --path vendor/bundle
   - ps: Install-Product node $env:nodejs_version
   - npm install --force
