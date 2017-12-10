@@ -1,26 +1,26 @@
-'use strict';
+const Gulp = require('gulp');
+const Plugins = require('gulp-load-plugins')();
+const File = require('fs');
+const PackageJSON = JSON.parse(File.readFileSync('./package-lock.json'));
+const Del = require('del');
+const BrowserSync = require('browser-sync').create();
+const RunSequence = require('run-sequence');
 
-var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')();
-var fs = require('fs');
-var packageJSON = JSON.parse(fs.readFileSync('./package.json'));
-var del = require('del');
-var browserSync = require('browser-sync');
-var runSequence = require('run-sequence');
-
-var DEST_DIR = 'dev';
-var BANNER =	'/*!\n' +
-              ' * Honoka v' + packageJSON.devDependencies["bootstrap-honoka"] + '\n' +
-              ' * Website http://honokak.osaka/\n' +
-              ' * Copyright 2015 windyakin\n' +
-              ' * The MIT License\n' +
-              ' */\n' +
-              '/*!\n' +
-              ' * Bootstrap v' + packageJSON.devDependencies["bootstrap"] + ' (http://getbootstrap.com/)\n' +
-              ' * Copyright 2011-' + new Date().getFullYear() + ' Twitter, Inc\n' +
-              ' * Licensed under the MIT license\n' +
-              ' */';
-var AUTOPREFIX = [
+let distDir = 'dev';
+const BANNER = [
+  '/*!',
+  ` * Honoka v${PackageJSON.dependencies["bootstrap-honoka"]['version']}`,
+  ' * Website http://honokak.osaka/',
+  ' * Copyright 2015 windyakin',
+  ' * The MIT License',
+  ' */',
+  '/*!',
+  ` * Bootstrap v${PackageJSON.dependencies["bootstrap"]['version']}(http://getbootstrap.com/)`,
+  ` * Copyright 2011-${new Date().getFullYear()} Twitter, Inc`,
+  ' * Licensed under the MIT license',
+  ' */'
+].join('\n');
+const AUTOPREFIX = [
   'Android 2.3',
   'Android >= 4',
   'Chrome >= 20',
@@ -30,8 +30,7 @@ var AUTOPREFIX = [
   'Opera >= 12',
   'Safari >= 6'
 ];
-
-var PACKAGE_LIBS_CONFIG = {
+const PACKAGE_LIBS_CONFIG = {
   "bootstrap": [
     "dist/fonts/**/*",
     "dist/js/bootstrap.**js"
@@ -44,7 +43,7 @@ var PACKAGE_LIBS_CONFIG = {
 /* ================================
  * Default task
  * ============================== */
-gulp.task('default', function() {
+Gulp.task('default', () => {
   console.log("Hello, world!");
 });
 
@@ -52,69 +51,69 @@ gulp.task('default', function() {
  * Cleanup tasks
  * ============================== */
 // clean libs dir
-gulp.task('clean:assets', function(callback) {
-  return del([DEST_DIR + '/assets/**/*'], callback);
+Gulp.task('clean:assets', (callback) => {
+  return Del([`${distDir}/assets/**/*`], callback);
 });
 
 // clean libs dir
-gulp.task('clean:lib', function(callback) {
-  return del([DEST_DIR + '/lib/**/*'], callback);
+Gulp.task('clean:lib', (callback) => {
+  return Del([`${distDir}/lib/**/*`], callback);
 });
 
 // clean dist dir
-gulp.task('clean:dist', function(callback) {
-  return del(['dist/**/*'], callback);
+Gulp.task('clean:dist', (callback) => {
+  return Del(['dist/**/*'], callback);
 });
 
 /* ================================
  * Library related tasks
  * ============================== */
 // npm libs copy `lib/` directory
-gulp.task('copy:npm', ['clean:lib'], function() {
-  var pathes = [];
-  for (var key in PACKAGE_LIBS_CONFIG) {
-    PACKAGE_LIBS_CONFIG[key].forEach(function(value) {
+Gulp.task('copy:npm', ['clean:lib'], () => {
+  let pathes = [];
+  for (let key in PACKAGE_LIBS_CONFIG) {
+    PACKAGE_LIBS_CONFIG[key].forEach((value) => {
       pathes.push(`node_modules/${key}/${value}`);
     });
   }
-  return gulp.src(pathes, {base: 'node_modules'})
-    .pipe(plugins.regexRename(/\/dist\//, "/"))
-    .pipe(gulp.dest(DEST_DIR + '/lib/'));
+  return Gulp.src(pathes, {base: 'node_modules'})
+    .pipe(Plugins.regexRename(/\/dist\//, "/"))
+    .pipe(Gulp.dest(`${distDir}/lib/`));
 });
 
 // original libs copy `lib/` directory
-gulp.task('copy:lib', ['clean:lib', 'copy:npm'], function() {
-  return gulp.src(['src/lib/**/*', '!**/.gitkeep'])
-    .pipe(gulp.dest(DEST_DIR + '/lib/'))
+Gulp.task('copy:lib', ['clean:lib', 'copy:npm'], () => {
+  return Gulp.src(['src/lib/**/*', '!**/.gitkeep'])
+    .pipe(Gulp.dest(`${distDir}/lib/`));
 });
 
 /* ================================
  * CSS related tasks
  * ============================== */
 // linter scss
-gulp.task('lint:scss', function() {
-  return gulp.src(['src/scss/**/*.scss'])
-    .pipe(plugins.sassLint({
+Gulp.task('lint:scss', () => {
+  return Gulp.src(['src/scss/**/*.scss'])
+    .pipe(Plugins.sassLint({
       config: 'src/scss/.scss-lint.yml',
     }))
-    .on('error', function(err) {
+    .on('error', (err) => {
       console.error(err);
     });
 });
 
 // compile scss
-gulp.task('build:css', ['lint:scss'], function() {
-  var bootstrap = plugins.filter(['**/bootstrap.**css'], {restore: true});
-  return gulp.src(['src/scss/**/*.scss'])
+Gulp.task('build:css', ['lint:scss'], () => {
+  let bootstrap = Plugins.filter(['**/bootstrap.**css'], {restore: true});
+  return Gulp.src(['src/scss/**/*.scss'])
     // plumber
-    .pipe(plugins.plumber({
-      errorHandler: function(err) {
+    .pipe(Plugins.plumber({
+      errorHandler: (err) => {
         console.log(err.message);
         this.end();
       }
     }))
     // sass compile
-    .pipe(plugins.sass({
+    .pipe(Plugins.sass({
       includePaths: [
         'node_modules/bootstrap-sass/assets/stylesheets/',
         'node_modules/bootstrap-honoka/scss/'
@@ -123,95 +122,97 @@ gulp.task('build:css', ['lint:scss'], function() {
       lineFeed: 'lf',
       outputStyle: 'expanded'
     }))
-    .pipe(plugins.plumber.stop())
+    .pipe(Plugins.plumber.stop())
     // autoprefixer
-    .pipe(plugins.postcss([
+    .pipe(Plugins.postcss([
       require('autoprefixer')({browsers: AUTOPREFIX})
     ]))
     // add banner
     .pipe(bootstrap)
-    .pipe(plugins.replace(/^@charset "UTF-8";/i, '@charset "UTF-8";\n'+ BANNER))
+    .pipe(Plugins.replace(/^@charset "UTF-8";/i, `@charset "UTF-8";\n${BANNER}\n`))
     .pipe(bootstrap.restore)
-    .pipe(gulp.dest(DEST_DIR + '/assets/css/'))
-    .pipe(browserSync.stream());
+    .pipe(Gulp.dest(`${distDir}/assets/css/`))
+    .pipe(BrowserSync.stream());
 });
 
 // optimize css
-gulp.task('opt:css', function() {
-  return gulp.src(['**/*.css', '!**/*.min.css'], {cwd: DEST_DIR + '/assets/css/'})
-    .pipe(plugins.csscomb())
-    .pipe(plugins.postcss([
+Gulp.task('opt:css', () => {
+  return Gulp.src(['**/*.css', '!**/*.min.css'], {cwd: `${distDir}/assets/css/`})
+    .pipe(Plugins.csscomb())
+    .pipe(Plugins.postcss([
       require('cssnano')()
     ]))
-    .pipe(gulp.dest('./' + DEST_DIR + '/assets/css/'));
+    .pipe(Gulp.dest(`${distDir}/assets/css/`));
 });
 
 /* ================================
  * JavaScript related tasks
  * ============================== */
 // linter js
-gulp.task('lint:js', function() {
-  return gulp.src(['src/js/**/*.js'])
-    .pipe(plugins.eslint('./src/js/.eslintrc.json'))
-    .pipe(plugins.eslint.format())
-    .pipe(plugins.eslint.failAfterError());
+Gulp.task('lint:js', () => {
+  return Gulp.src(['src/js/**/*.js'])
+    .pipe(Plugins.eslint('./src/js/.eslintrc.json'))
+    .pipe(Plugins.eslint.format())
+    .pipe(Plugins.eslint.failAfterError());
 });
 
 // build js
-gulp.task('build:js', ['lint:js'], function() {
-  return gulp.src(['src/js/**/*.js'])
-    .pipe(gulp.dest(DEST_DIR + '/assets/js/'))
-    .pipe(browserSync.stream());
+Gulp.task('build:js', ['lint:js'], () => {
+  return Gulp.src(['src/js/**/*.js'])
+    .pipe(Gulp.dest(`${distDir}/assets/js/`))
+    .pipe(BrowserSync.stream());
 });
 
 // optimize js
-gulp.task('opt:js', function() {
-  return gulp.src(['**/*.js', '!**/*.min.js'], {cwd: DEST_DIR + '/assets/js/'})
-    .pipe(plugins.uglify({output: {comments: /^!/}}))
-    .pipe(gulp.dest(DEST_DIR + '/assets/js/'));
+Gulp.task('opt:js', () => {
+  return Gulp.src(['**/*.js', '!**/*.min.js'], {cwd: `${distDir}/assets/js/`})
+    .pipe(Plugins.uglify({output: {comments: /^!/}}))
+    .pipe(Gulp.dest(`${distDir}/assets/js/`));
 });
 
 /* ================================
  * Images related tasks
  * ============================== */
 // build image
-gulp.task('build:img', function() {
-  return gulp.src(['src/img/**/*'])
-    .pipe(gulp.dest(DEST_DIR + '/assets/img/'))
-    .pipe(browserSync.stream());
+Gulp.task('build:img', () => {
+  return Gulp.src(['src/img/**/*'])
+    .pipe(Gulp.dest(`${distDir}/assets/img/`))
+    .pipe(BrowserSync.stream());
 });
 
 // optimize image
-gulp.task('opt:img', function() {
-  return gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: DEST_DIR + '/assets/img/'})
-    .pipe(plugins.imagemin())
-    .pipe(gulp.dest(DEST_DIR + '/assets/img/'));
+Gulp.task('opt:img', () => {
+  return Gulp.src(['**/*.{png,jpg,gif,svg}'], {cwd: `${distDir}/assets/img/`})
+    .pipe(Plugins.imagemin())
+    .pipe(Gulp.dest(`${distDir}/assets/img/`));
 });
 
 /* ================================
  * Watch tasks
  * ============================== */
-gulp.task('watch', function() {
-  var message = function(ev) {
-    console.log('File: ' + ev.path + ' was ' + ev.type + ', running tasks...');
+Gulp.task('watch', () => {
+  let message = (ev) => {
+    console.log(`File: ${ev.path} was ${ev.type}, running tasks...`);
   };
-  gulp.watch(['src/scss/**/*.scss'], ['build:css'])
+  Gulp.watch(['dev/**/*.html'])
+    .on('change', message)
+    .on('change', BrowserSync.reload);
+  Gulp.watch(['src/scss/**/*.scss'], ['build:css'])
     .on('change', message);
-  gulp.watch(['src/js/**/*.js'], ['build:js'])
+  Gulp.watch(['src/js/**/*.js'], ['build:js'])
     .on('change', message);
-  gulp.watch(['src/img/**/*'], ['build:img'])
+  Gulp.watch(['src/img/**/*'], ['build:img'])
     .on('change', message);
-  gulp.watch(['src/lib/**/*'], ['copy:lib'])
+  Gulp.watch(['src/lib/**/*'], ['copy:lib'])
     .on('change', message);
 });
 
 /* ================================
  * BrowserSync
  * ============================== */
-gulp.task('serve', function() {
-  browserSync = browserSync.create();
+Gulp.task('serve', () => {
   console.log('task browserSync')
-  browserSync.init({
+  BrowserSync.init({
     server: 'dev/',
     port: 8000
   });
@@ -221,30 +222,29 @@ gulp.task('serve', function() {
  * Other tasks
  * ============================== */
 // change output dir
-gulp.task('release', function() {
-  DEST_DIR = 'dist'
+Gulp.task('release', () => {
+  distDir = 'dist'
 });
 
 // copy to dist/ from dev/
-gulp.task('copy:dist', function() {
-  gulp.src(['**/*', '!assets/**/*', '!lib/**/*'], {cwd: 'dev/'})
-    .pipe(gulp.dest('dist/'));
+Gulp.task('copy:dist', () => {
+  Gulp.src(['**/*', '!assets/**/*', '!lib/**/*'], {cwd: 'dev/'})
+    .pipe(Gulp.dest('dist/'));
 });
 
 /* ================================
  * Mixed tasks
  * ============================== */
-gulp.task('init', ['clean:assets', 'clean:lib']);
-gulp.task('test', ['lint:scss', 'lint:js']);
-gulp.task('lib', ['copy:lib']);
-gulp.task('build', ['build:css', 'build:js', 'build:img']);
-gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
-gulp.task('server', ['serve', 'watch']);
+Gulp.task('init', ['clean:assets', 'clean:lib']);
+Gulp.task('test', ['lint:scss', 'lint:js']);
+Gulp.task('lib', ['copy:lib']);
+Gulp.task('build', ['build:css', 'build:js', 'build:img']);
+Gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
+Gulp.task('server', ['serve', 'watch']);
 
-gulp.task('dev', function() {
-  runSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
+Gulp.task('dev', () => {
+  RunSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
 });
-gulp.task('dist', function() {
-  runSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build', 'copy:dist'], ['optimize']);
+Gulp.task('dist', () => {
+  RunSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build', 'copy:dist'], ['optimize']);
 });
-
