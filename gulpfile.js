@@ -1,12 +1,16 @@
 const Gulp = require('gulp');
 const Plugins = require('gulp-load-plugins')();
 const File = require('fs');
-const PackageJSON = JSON.parse(File.readFileSync('./package-lock.json'));
 const Del = require('del');
 const BrowserSync = require('browser-sync').create();
 const RunSequence = require('run-sequence');
 
+const PackageJSON = JSON.parse(File.readFileSync('./package-lock.json'));
+const AutoPrefixConfig = JSON.parse(File.readFileSync('./autoprefix.json'));
+const PackageLibsConfig = JSON.parse(File.readFileSync('./package.json'))['config']['exportFiles'];
+
 let distDir = 'dev';
+
 const BANNER = [
   '/*!',
   ` * Honoka v${PackageJSON.dependencies["bootstrap-honoka"]['version']}`,
@@ -20,25 +24,6 @@ const BANNER = [
   ' * Licensed under the MIT license',
   ' */'
 ].join('\n');
-const AUTOPREFIX = [
-  'Android 2.3',
-  'Android >= 4',
-  'Chrome >= 20',
-  'Firefox >= 24',
-  'Explorer >= 8',
-  'iOS >= 6',
-  'Opera >= 12',
-  'Safari >= 6'
-];
-const PACKAGE_LIBS_CONFIG = {
-  "bootstrap": [
-    "dist/fonts/**/*",
-    "dist/js/bootstrap.**js"
-  ],
-  "jquery": [
-    "dist/jquery.**js"
-  ]
-};
 
 /* ================================
  * Default task
@@ -71,8 +56,8 @@ Gulp.task('clean:dist', (callback) => {
 // npm libs copy `lib/` directory
 Gulp.task('copy:npm', ['clean:lib'], () => {
   let pathes = [];
-  for (let key in PACKAGE_LIBS_CONFIG) {
-    PACKAGE_LIBS_CONFIG[key].forEach((value) => {
+  for (let key in PackageLibsConfig) {
+    PackageLibsConfig[key].forEach((value) => {
       pathes.push(`node_modules/${key}/${value}`);
     });
   }
@@ -125,7 +110,7 @@ Gulp.task('build:css', ['lint:scss'], () => {
     .pipe(Plugins.plumber.stop())
     // autoprefixer
     .pipe(Plugins.postcss([
-      require('autoprefixer')({browsers: AUTOPREFIX})
+      require('autoprefixer')({browsers: AutoPrefixConfig})
     ]))
     // add banner
     .pipe(bootstrap)
