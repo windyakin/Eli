@@ -3,3 +3,62 @@
 @import "eli/variables";
 @import "eli/mixins";
 @import "honoka/variables";
+@import "honoka/mixins";
+
+$brand-twitter: #55acee;
+$brand-facebook: #3b5998;
+$brand-hatena: #178fde;
+
+.btn-twitter,.btn-facebook {
+	.fa.fa-lg {
+		margin-right: 2px;
+		vertical-align: -1px;
+	}
+}
+.btn-twitter {
+	@include button-variant(#fff, $brand-twitter, darken($brand-twitter, 2%));
+}
+.btn-facebook {
+	@include button-variant(#fff, $brand-facebook, darken($brand-facebook, 2%));
+}
+.btn-hatebu {
+	@include button-variant(#fff, $brand-hatena, darken($brand-hatena, 2%));
+}
+
+.fa.fa-hatebu::before {
+	font-family: Verdana;
+	font-weight: bold;
+	content: "B!";
+}
+
+.social {
+	padding: $padding-large-vertical 0;
+	background: $gray-lighter;
+}
+
+.social-buttons {
+	position: relative;
+	padding: $padding-large-vertical 0;
+	margin: 0 auto !important;
+	overflow: hidden;
+	> ul {
+		position: relative;
+		left: 50%;
+		float: left;
+		padding: 0;
+		margin: 0;
+		list-style: outside none none;
+		> li {
+			position: relative;
+			left: -50%;
+			float: left;
+			padding: 0;
+			margin: 0 10px;
+			.fb-like {
+				> span {
+					vertical-align: 0 !important;
+				}
+			}
+		}
+	}
+}
