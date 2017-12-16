@@ -6,7 +6,7 @@
 [![The MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 
-![eli](eli.png)
+![eli](src/img/ogp.png)
 
 Eliは完全オレオレ仕様のフロントエンド開発用テンプレートです。
 
