@@ -69,17 +69,25 @@ Eliの基本ディレクトリ構成は以下のようになっています。
 eli/
 ├─ dev/
 │   ├─ assets/
-│   ├─ lib/
-│   └─ *.html
+│   └─ lib/
 ├─ dist/
 └─ src/
-    ├─ honoka/
+    ├─ html/
+    │   ├─ components/
+    │   │   └─ _*.pub
+    │   ├─ layouts/
+    │   │   ├─ includes/
+    │   │   │   └─ _*.pub
+    │   │   └─ _*.pub
+    │   └─ *.pug
     ├─ scss/
     │   ├─ eli/
+    │   │   ├─ _mixins.scss
     │   │   └─ _variables.scss
     │   ├─ bootstrap.scss
     │   └─ default.scss
     ├─ img/
+    │   └─ *.*
     └─ js/
          └─ *.js
 ```
@@ -87,6 +95,8 @@ eli/
 #### src/
 
 * アセット系のものを配置するディレクトリ
+* `html/` - [Pug](https://github.com/pugjs/pug) をつかったテンプレート雛形
+  * HTMLの階層構造などはここで表現する
 * `scss/` - SCSSとその設定ファイルなど
 * `js/` - JavaScriptとその設定ファイルなど
 * `img/` - 画像
@@ -96,7 +106,6 @@ eli/
 
 * ローカルテスト用のディレクトリ
 * ローカル上で試すときはここをルートディレクトリにする
-* HTMLやPHPなど、 `src/` に配置できないファイルは `dev/` 以下に配置する
 * `dev/assets/` と `dev/lib/` は予約済みなので同名のフォルダを作り使うことはできない(後述)
   * Gitでファイル変更がトラックされない(.gitignore)
   * 開発タスクやビルドタスクを走らせると一度中身が全て消される
@@ -165,6 +174,8 @@ eli/
   * `src/lib/` の内容を `{dev,dist}/lib/` にコピーする
 * `optimize`
   * `assets/` 内のファイルをminifyしたり最適化したりする
+* `build:html`
+  * `src/html/` 以下のPugファイルをビルドし `{dev,dist}/` に出力
 * `build:css`
   * `src/scss/` 以下のSCSSをビルドし `{dev,dist}/assets/css/` に出力
   * ベンダープレフィックスを付与
