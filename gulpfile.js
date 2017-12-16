@@ -6,6 +6,7 @@ const BrowserSync = require('browser-sync').create();
 const RunSequence = require('run-sequence');
 
 const PackageJSON = JSON.parse(File.readFileSync('./package-lock.json'));
+const SiteVariablesJSON = JSON.parse(File.readFileSync('./src/html/variables.json'));
 const AutoPrefixConfig = JSON.parse(File.readFileSync('./autoprefix.json'));
 const PackageLibsConfig = JSON.parse(File.readFileSync('./package.json'))['config']['exportFiles'];
 
@@ -35,6 +36,11 @@ Gulp.task('default', () => {
 /* ================================
  * Cleanup tasks
  * ============================== */
+// clean html
+Gulp.task('clean:html', (callback) => {
+  return Del(`${distDir}/**/*.html`, callback);
+});
+
 // clean libs dir
 Gulp.task('clean:assets', (callback) => {
   return Del([`${distDir}/assets/**/*`], callback);
@@ -48,6 +54,16 @@ Gulp.task('clean:lib', (callback) => {
 // clean dist dir
 Gulp.task('clean:dist', (callback) => {
   return Del(['dist/**/*'], callback);
+});
+
+/* ================================
+ * html build tasks
+ * ============================== */
+Gulp.task('build:html', () => {
+  return Gulp.src(['src/html/**/*.pug', '!src/html/**/_*.pug'], {base: `src/html/`})
+    .pipe(Plugins.plumber())
+    .pipe(Plugins.pug({locals: { site: SiteVariablesJSON }, pretty: true}))
+    .pipe(Gulp.dest(`${distDir}/`));
 });
 
 /* ================================
@@ -92,7 +108,7 @@ Gulp.task('build:css', ['lint:scss'], () => {
   return Gulp.src(['src/scss/**/*.scss'])
     // plumber
     .pipe(Plugins.plumber({
-      errorHandler: (err) => {
+      errorHandler: function (err) {
         console.log(err.message);
         this.end();
       }
@@ -179,6 +195,8 @@ Gulp.task('watch', () => {
   let message = (ev) => {
     console.log(`File: ${ev.path} was ${ev.type}, running tasks...`);
   };
+  Gulp.watch(['src/**/*.pug'], ['build:html'])
+    .on('change', message);
   Gulp.watch(['dev/**/*.html'])
     .on('change', message)
     .on('change', BrowserSync.reload);
@@ -223,7 +241,7 @@ Gulp.task('copy:dist', () => {
 Gulp.task('init', ['clean:assets', 'clean:lib']);
 Gulp.task('test', ['lint:scss', 'lint:js']);
 Gulp.task('lib', ['copy:lib']);
-Gulp.task('build', ['build:css', 'build:js', 'build:img']);
+Gulp.task('build', ['build:css', 'build:js', 'build:img', 'build:html']);
 Gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
 Gulp.task('server', ['serve', 'watch']);
 
