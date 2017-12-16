@@ -5,6 +5,9 @@
 [![devDependency Status](https://david-dm.org/windyakin/Eli/dev-status.svg)](https://david-dm.org/windyakin/Eli#info=devDependencies)
 [![The MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+
+![eli](eli.png)
+
 Eliは完全オレオレ仕様のフロントエンド開発用テンプレートです。
 
 ## About
@@ -13,9 +16,8 @@ Eliは完全オレオレ仕様のフロントエンド開発用テンプレー�
 
 なおこのテンプレートの開発にはSANOGRAPHIXさんの[Rin](https://github.com/sanographix/rin)の影響を大いに受けています。
 
-## Quick start
 
-## Getting Started
+## Getting started
 
 ビルド環境を使用するためには以下のプログラムとライブラリが必要です。なお説明の際に記述しているバージョンはこのREADME.mdを執筆している時点(2017年12月)の安定版・最新版のバージョンです。
 
@@ -114,11 +116,13 @@ eli/
 * ファイル指定が面倒になるのでminifyしても `.min.{css,js}` などにせず、同一のファイル名にする
 * `dist/assets/` には `src/` から **minifyされた** コードが生成される
 
+### gulp task
 
-### gulp Task
+#### Development (with test)
 
-#### Development (Test)
-
+```
+% npm run start
+```
 ```
 % gulp dev
 ```
@@ -131,8 +135,11 @@ eli/
   * [http://localhost:8000/](http://localhost:8000/) からアクセスが可能
   * `dev/` 以下のファイルが更新された時、自動でリロードする
 
-#### Distribute Build
+#### Distribute build
 
+```
+% npm run build
+```
 ```
 % gulp dist
 ```
@@ -142,8 +149,7 @@ eli/
 * `dist/assets/` 以下のファイルの最適化が行われる
 * `% npm start` でも同様の結果が得られる
 
-
-#### Sub Task
+#### Sub tasks
 
 メインのタスクを構成するサブタスクの説明
 
@@ -177,6 +183,7 @@ eli/
 ## License
 
 [MIT License](LICENSE)
+
 
 ## Author
 
