@@ -87,7 +87,7 @@ eli/
     │   ├─ bootstrap.scss
     │   └─ default.scss
     ├─ img/
-    │   └─ *.*
+    │   └─ *.*
     └─ js/
          └─ *.js
 ```
