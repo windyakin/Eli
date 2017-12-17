@@ -68,8 +68,6 @@ Eliの基本ディレクトリ構成は以下のようになっています。
 ```
 eli/
 ├─ dev/
-│   ├─ assets/
-│   └─ lib/
 ├─ dist/
 └─ src/
     ├─ html/
