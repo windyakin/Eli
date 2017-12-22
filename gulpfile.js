@@ -110,7 +110,7 @@ Gulp.task('build:css', ['lint:scss'], () => {
     .pipe(Plugins.plumber({
       errorHandler: function (err) {
         console.log(err.message);
-        this.end();
+        this.emit('end');
       }
     }))
     // sass compile
