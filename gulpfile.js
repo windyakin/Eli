@@ -229,12 +229,6 @@ Gulp.task('release', () => {
   distDir = 'dist'
 });
 
-// copy to dist/ from dev/
-Gulp.task('copy:dist', () => {
-  Gulp.src(['**/*', '!assets/**/*', '!lib/**/*'], {cwd: 'dev/'})
-    .pipe(Gulp.dest('dist/'));
-});
-
 /* ================================
  * Mixed tasks
  * ============================== */
@@ -249,5 +243,5 @@ Gulp.task('dev', () => {
   RunSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
 });
 Gulp.task('dist', () => {
-  RunSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build', 'copy:dist'], ['optimize']);
+  RunSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build'], ['optimize']);
 });
