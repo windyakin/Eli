@@ -3,7 +3,6 @@ const Plugins = require('gulp-load-plugins')();
 const File = require('fs');
 const Del = require('del');
 const BrowserSync = require('browser-sync').create();
-const RunSequence = require('run-sequence');
 
 const PackageJSON = JSON.parse(File.readFileSync('./package-lock.json'));
 const AutoPrefixConfig = JSON.parse(File.readFileSync('./autoprefix.json'));
@@ -36,23 +35,23 @@ Gulp.task('default', () => {
  * Cleanup tasks
  * ============================== */
 // clean html
-Gulp.task('clean:html', (callback) => {
-  return Del(`${distDir}/**/*.html`, callback);
+Gulp.task('clean:html', (resolve) => {
+  return Del(`${distDir}/**/*.html`, resolve);
 });
 
 // clean libs dir
-Gulp.task('clean:assets', (callback) => {
-  return Del([`${distDir}/assets/**/*`], callback);
+Gulp.task('clean:assets', (resolve) => {
+  return Del([`${distDir}/assets/**/*`], resolve);
 });
 
 // clean libs dir
-Gulp.task('clean:lib', (callback) => {
-  return Del([`${distDir}/lib/**/*`], callback);
+Gulp.task('clean:lib', (resolve) => {
+  return Del([`${distDir}/lib/**/*`], resolve);
 });
 
 // clean dist dir
-Gulp.task('clean:dist', (callback) => {
-  return Del(['dist/**/*'], callback);
+Gulp.task('clean:dist', (resolve) => {
+  return Del(['dist/**/*'], resolve);
 });
 
 /* ================================
@@ -70,7 +69,7 @@ Gulp.task('build:html', () => {
  * Library related tasks
  * ============================== */
 // npm libs copy `lib/` directory
-Gulp.task('copy:npm', ['clean:lib'], () => {
+Gulp.task('copy:npm', Gulp.series('clean:lib', () => {
   let pathes = [];
   for (let key in PackageLibsConfig) {
     PackageLibsConfig[key].forEach((value) => {
@@ -80,13 +79,13 @@ Gulp.task('copy:npm', ['clean:lib'], () => {
   return Gulp.src(pathes, {base: 'node_modules'})
     .pipe(Plugins.regexRename(/\/dist\//, "/"))
     .pipe(Gulp.dest(`${distDir}/lib/`));
-});
+}));
 
 // original libs copy `lib/` directory
-Gulp.task('copy:lib', ['clean:lib', 'copy:npm'], () => {
+Gulp.task('copy:lib', Gulp.series('clean:lib', 'copy:npm', () => {
   return Gulp.src(['src/lib/**/*', '!**/.gitkeep'])
     .pipe(Gulp.dest(`${distDir}/lib/`));
-});
+}));
 
 /* ================================
  * CSS related tasks
@@ -103,7 +102,7 @@ Gulp.task('lint:scss', () => {
 });
 
 // compile scss
-Gulp.task('build:css', ['lint:scss'], () => {
+Gulp.task('build:css', Gulp.series('lint:scss', () => {
   let bootstrap = Plugins.filter(['**/bootstrap.**css'], {restore: true});
   return Gulp.src(['src/scss/**/*.scss'])
     // plumber
@@ -116,8 +115,8 @@ Gulp.task('build:css', ['lint:scss'], () => {
     // sass compile
     .pipe(Plugins.sass({
       includePaths: [
-        'node_modules/bootstrap-sass/assets/stylesheets/',
-        'node_modules/bootstrap-honoka/scss/'
+        'node_modules',
+        'node_modules/bootstrap-honoka/scss'
       ],
       sourcemap: 'none',
       lineFeed: 'lf',
@@ -134,7 +133,7 @@ Gulp.task('build:css', ['lint:scss'], () => {
     .pipe(bootstrap.restore)
     .pipe(Gulp.dest(`${distDir}/assets/css/`))
     .pipe(BrowserSync.stream());
-});
+}));
 
 // optimize css
 Gulp.task('opt:css', () => {
@@ -158,11 +157,11 @@ Gulp.task('lint:js', () => {
 });
 
 // build js
-Gulp.task('build:js', ['lint:js'], () => {
+Gulp.task('build:js', Gulp.series('lint:js', () => {
   return Gulp.src(['src/js/**/*.js'])
     .pipe(Gulp.dest(`${distDir}/assets/js/`))
     .pipe(BrowserSync.stream());
-});
+}));
 
 // optimize js
 Gulp.task('opt:js', () => {
@@ -195,18 +194,18 @@ Gulp.task('watch', () => {
   let message = (ev) => {
     console.log(`File: ${ev.path} was ${ev.type}, running tasks...`);
   };
-  Gulp.watch(['src/html/**/*.pug', 'src/html/variables.json'], ['build:html'])
+  Gulp.watch(['src/html/**/*.pug', 'src/html/variables.json'], Gulp.series('build:html'))
     .on('change', message);
   Gulp.watch(['dev/**/*.html'])
     .on('change', message)
     .on('change', BrowserSync.reload);
-  Gulp.watch(['src/scss/**/*.scss'], ['build:css'])
+  Gulp.watch(['src/scss/**/*.scss'], Gulp.series('build:css'))
     .on('change', message);
-  Gulp.watch(['src/js/**/*.js'], ['build:js'])
+  Gulp.watch(['src/js/**/*.js'], Gulp.series('build:js'))
     .on('change', message);
-  Gulp.watch(['src/img/**/*'], ['build:img'])
+  Gulp.watch(['src/img/**/*'], Gulp.series('build:img'))
     .on('change', message);
-  Gulp.watch(['src/lib/**/*'], ['copy:lib'])
+  Gulp.watch(['src/lib/**/*'], Gulp.series('copy:lib'))
     .on('change', message);
 });
 
@@ -225,23 +224,21 @@ Gulp.task('serve', () => {
  * Other tasks
  * ============================== */
 // change output dir
-Gulp.task('release', () => {
-  distDir = 'dist'
+Gulp.task('release', (resolve) => {
+  distDir = 'dist';
+  resolve();
 });
 
 /* ================================
  * Mixed tasks
  * ============================== */
-Gulp.task('init', ['clean:assets', 'clean:lib']);
-Gulp.task('test', ['lint:scss', 'lint:js']);
-Gulp.task('lib', ['copy:lib']);
-Gulp.task('build', ['build:css', 'build:js', 'build:img', 'build:html']);
-Gulp.task('optimize', ['opt:css', 'opt:js', 'opt:img']);
-Gulp.task('server', ['serve', 'watch']);
+Gulp.task('init', Gulp.series('clean:assets', 'clean:lib'));
+Gulp.task('test', Gulp.series('lint:scss', 'lint:js'));
+Gulp.task('lib', Gulp.series('copy:lib'));
+Gulp.task('build', Gulp.series('build:css', 'build:js', 'build:img', 'build:html'));
+Gulp.task('optimize', Gulp.series('opt:css', 'opt:js', 'opt:img'));
+Gulp.task('server', Gulp.series('serve', 'watch'));
 
-Gulp.task('dev', () => {
-  RunSequence(['init'], ['lib'], ['build'], ['serve', 'watch']);
-});
-Gulp.task('dist', () => {
-  RunSequence(['release'], ['clean:dist', 'init'], ['lib'], ['build'], ['optimize']);
-});
+Gulp.task('dev',  Gulp.series('init', 'lib', 'build', Gulp.parallel('serve', 'watch')));
+
+Gulp.task('dist', Gulp.series('release', Gulp.parallel('clean:dist', 'init'), 'lib', 'build', 'optimize'));
