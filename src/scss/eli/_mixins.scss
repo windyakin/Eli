@@ -1,32 +1,38 @@
 @import "variables";
-@import "bootstrap/variables";
+@import "bootstrap/scss/variables";
 
 @mixin retina {
-	@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-		@content;
-	}
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    @content;
+  }
 }
 
 @mixin xs {
-	@media (min-width: $screen-xs-min) {
-		@content;
-	}
+  @media (min-width: map-get($grid-breakpoints, "xs")) {
+    @content;
+  }
 }
 
 @mixin sm {
-	@media (min-width: $screen-sm-min) {
-		@content;
-	}
+  @media (min-width: map-get($grid-breakpoints, "sm")) {
+    @content;
+  }
 }
 
 @mixin md {
-	@media (min-width: $screen-md-min) {
-		@content;
-	}
+  @media (min-width: map-get($grid-breakpoints, "md")) {
+    @content;
+  }
 }
 
 @mixin lg {
-	@media (min-width: $screen-lg-min) {
-		@content;
-	}
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
+    @content;
+  }
+}
+
+@mixin xl {
+  @media (min-width: map-get($grid-breakpoints, "xl")) {
+    @content;
+  }
 }
