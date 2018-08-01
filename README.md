@@ -72,11 +72,11 @@ eli/
 └─ src/
     ├─ html/
     │   ├─ components/
-    │   │   └─ _*.pub
+    │   │   └─ _*.pug
     │   ├─ layouts/
     │   │   ├─ includes/
-    │   │   │   └─ _*.pub
-    │   │   └─ _*.pub
+    │   │   │   └─ _*.pug
+    │   │   └─ _*.pug
     │   └─ *.pug
     ├─ scss/
     │   ├─ eli/
