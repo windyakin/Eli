@@ -50,8 +50,14 @@
     "gulp-replace": "^1.0.0",
     "gulp-sass": "^4.0.1",
     "gulp-sass-lint": "^1.4.0",
+    "gulp-stylelint": "^7.0.0",
     "gulp-uglify": "^3.0.1",
-    "jquery": "^3.3.1"
+    "jquery": "^3.3.1",
+    "stylelint": "^9.4.0",
+    "stylelint-config-recommended-scss": "^3.2.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-order": "^1.0.0",
+    "stylelint-scss": "^3.3.0"
   },
   "dependencies": {}
 }

@@ -93,12 +93,12 @@ Gulp.task('copy:lib', Gulp.series('clean:lib', 'copy:npm', () => {
 // linter scss
 Gulp.task('lint:scss', () => {
   return Gulp.src(['src/scss/**/*.scss'])
-    .pipe(Plugins.sassLint({
-      config: 'src/scss/.scss-lint.yml',
-    }))
-    .on('error', (err) => {
-      console.error(err);
-    });
+    .pipe(Plugins.stylelint({
+      configFile: '.stylelintrc',
+      reporters: [
+        { formatter: 'string', console: true }
+      ],
+    }));
 });
 
 // compile scss
@@ -140,7 +140,7 @@ Gulp.task('opt:css', () => {
   return Gulp.src(['**/*.css', '!**/*.min.css'], {cwd: `${distDir}/assets/css/`})
     .pipe(Plugins.csscomb())
     .pipe(Plugins.postcss([
-      require('cssnano')()
+        require('cssnano')()
     ]))
     .pipe(Gulp.dest(`${distDir}/assets/css/`));
 });

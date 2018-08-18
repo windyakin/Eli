@@ -40,9 +40,9 @@ $brand-colors: map-merge((
 }
 
 .icon.icon-hatena::before {
+  font-family: Verdana, sans-serif;
   font-style: normal;
-  font-family: Verdana;
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   content: "B!";
 }
 
@@ -54,6 +54,7 @@ $brand-colors: map-merge((
 .social-buttons {
   position: relative;
   padding: $spacer 0;
+  /* stylelint-disable-next-line declaration-no-important */
   margin: 0 auto !important;
   overflow: hidden;
   > ul {
@@ -69,11 +70,11 @@ $brand-colors: map-merge((
       float: left;
       padding: 0;
       margin: 0 10px;
-      .fb-like {
-        > span {
-          vertical-align: 0 !important;
-        }
-      }
     }
   }
+}
+
+.fb-like > span {
+  /* stylelint-disable-next-line declaration-no-important */
+  vertical-align: 0 !important;
 }
