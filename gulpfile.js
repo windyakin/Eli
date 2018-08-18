@@ -138,7 +138,6 @@ Gulp.task('build:css', Gulp.series('lint:scss', () => {
 // optimize css
 Gulp.task('opt:css', () => {
   return Gulp.src(['**/*.css', '!**/*.min.css'], {cwd: `${distDir}/assets/css/`})
-    .pipe(Plugins.csscomb())
     .pipe(Plugins.postcss([
         require('cssnano')()
     ]))
