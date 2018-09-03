@@ -1,33 +1,27 @@
 
-header
-  .navbar.navbar-default
+header.mb-3
+  .navbar.navbar-expand-md.navbar-light.bg-light
     .container
-      .navbar-header
-        a.navbar-brand(href=site.url) Site Title
-        button.navbar-toogle(type="button" data-toggle="collapse" data-target="#navbar-main")
-          span.icon-bar
-          span.icon-bar
-          span.icon-bar
-      .navbar-collapse.collapse#navbar-main
-        ul.nav.navbar-nav
-          li.active
-            a(href="/") Home
-        .nav.navbar-form.navbar-right
-          .form-group
-            - let encodeSiteText = encodeURIComponent(`${site.title} - ${site.description}`)
+      a.navbar-brand(href=site.url) Site Title
+      button.navbar-toggler(type="button" data-toggle="collapse" data-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false" aria-label="Toggle navigation")
+        span.navbar-toggler-icon
+
+      nav.collapse.navbar-collapse#navbar-main
+        ul.navbar-nav.mr-auto
+          li.nav-item.active
+            a.nav-link(href="/") Home
+
+        ul.form-inline.list-inline.my-2.my-md-0
+          - let encodeSiteText = encodeURIComponent(`${site.title} - ${site.description}`)
+          li.list-inline-item
             a.btn.btn-twitter(href=`https://twitter.com/intent/tweet?url=${site.url}&text=${encodeSiteText}`)
-              i.fa.fa-twitter.fa-lg
-              |
+              i.fab.fa-twitter.fa-lg.fa-fw.mr-1
               | Tweet
-            |
-            |
+          li.list-inline-item
             a.btn.btn-facebook(href=`http://www.facebook.com/sharer.php?u=${site.url}`)
-              i.fa.fa-facebook.fa-lg
-              |
+              i.fab.fa-facebook-f.fa-lg.fa-fw.mr-1
               | Share
-            |
-            |
-            a.btn.btn-hatebu(href="javascript:window.open('http://b.hatena.ne.jp/add?mode=confirm&is_bm=1&title='+escape(document.title)+'&url='+escape(location.href),%20'_blank',%20'width=520,height=600,resizable=1,scrollbars=1');undefined;")
-              i.fa.fa-hatebu.fa-lg
-              |
+          li.list-inline-item
+            a.btn.btn-hatena(href="javascript:window.open('http://b.hatena.ne.jp/add?mode=confirm&is_bm=1&title='+escape(document.title)+'&url='+escape(location.href),%20'_blank',%20'width=520,height=600,resizable=1,scrollbars=1');undefined;")
+              i.icon.icon-hatena.fa-lg.mr-1
               | Bookmark

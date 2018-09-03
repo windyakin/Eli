@@ -1,64 +1,80 @@
 @charset "UTF-8";
 
+@import "bootstrap/scss/functions";
 @import "eli/variables";
 @import "eli/mixins";
 @import "honoka/variables";
 @import "honoka/mixins";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/buttons";
 
-$brand-twitter: #55acee;
+// stylelint-disable
+$brand-honoka:   #ff9800;
+$brand-twitter:  #55acee;
 $brand-facebook: #3b5998;
-$brand-hatena: #178fde;
+$brand-hatena:   #178fde;
 
-.btn-twitter,.btn-facebook {
-	.fa.fa-lg {
-		margin-right: 2px;
-		vertical-align: -1px;
-	}
-}
-.btn-twitter {
-	@include button-variant(#fff, $brand-twitter, darken($brand-twitter, 2%));
-}
-.btn-facebook {
-	@include button-variant(#fff, $brand-facebook, darken($brand-facebook, 2%));
-}
-.btn-hatebu {
-	@include button-variant(#fff, $brand-hatena, darken($brand-hatena, 2%));
+$brand-colors: ();
+$brand-colors: map-merge((
+  "honoka":   $brand-honoka,
+  "twitter":  $brand-twitter,
+  "facebook": $brand-facebook,
+  "hatena":   $brand-hatena
+), $brand-colors);
+// stylelint-enable
+
+@each $color, $value in $brand-colors {
+  .btn-#{$color} {
+    @include button-variant($value, $value);
+    color: #fff;
+    border: 1px solid #fff;
+  }
 }
 
-.fa.fa-hatebu::before {
-	font-family: Verdana;
-	font-weight: bold;
-	content: "B!";
+.btn-twitter,
+.btn-facebook,
+.btn-hatena {
+  .fa.fa-lg {
+    vertical-align: -1px;
+  }
+}
+
+.icon.icon-hatena::before {
+  font-family: Verdana, sans-serif;
+  font-style: normal;
+  font-weight: $font-weight-bold;
+  content: "B!";
 }
 
 .social {
-	padding: $padding-large-vertical 0;
-	background: $gray-lighter;
+  padding: $spacer 0;
+  background: $gray-300;
 }
 
 .social-buttons {
-	position: relative;
-	padding: $padding-large-vertical 0;
-	margin: 0 auto !important;
-	overflow: hidden;
-	> ul {
-		position: relative;
-		left: 50%;
-		float: left;
-		padding: 0;
-		margin: 0;
-		list-style: outside none none;
-		> li {
-			position: relative;
-			left: -50%;
-			float: left;
-			padding: 0;
-			margin: 0 10px;
-			.fb-like {
-				> span {
-					vertical-align: 0 !important;
-				}
-			}
-		}
-	}
+  position: relative;
+  padding: $spacer 0;
+  /* stylelint-disable-next-line declaration-no-important */
+  margin: 0 auto !important;
+  overflow: hidden;
+  > ul {
+    position: relative;
+    left: 50%;
+    float: left;
+    padding: 0;
+    margin: 0;
+    list-style: outside none none;
+    > li {
+      position: relative;
+      left: -50%;
+      float: left;
+      padding: 0;
+      margin: 0 10px;
+    }
+  }
+}
+
+.fb-like > span {
+  /* stylelint-disable-next-line declaration-no-important */
+  vertical-align: 0 !important;
 }
